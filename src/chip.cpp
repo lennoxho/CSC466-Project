@@ -77,6 +77,7 @@ std::int64_t Chip::bbox_for_net(const Net &net) const {
 
     std::int64_t x_diff = max_x - min_x;
     std::int64_t y_diff = max_y - min_y;
+    //return x_diff*x_diff + y_diff*y_diff;
     return std::abs(x_diff) + std::abs(y_diff);
 }
 

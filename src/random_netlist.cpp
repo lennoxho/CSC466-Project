@@ -13,7 +13,9 @@ namespace Utils {
     {
         Netlist netlist{ num_ipins, num_opins, num_luts, num_ffs, num_inputs, num_outputs, 10000000 };
 
+        static constexpr double connect_prob = 0.1;
         std::mt19937 eng;
+        std::uniform_real_distribution<> connect_dist{ 0.0, 1.0 };
         std::uniform_int_distribution<std::size_t> atom_dist{ 0, num_luts + num_ffs - 1 };
         std::uniform_int_distribution<std::size_t> oport_dist{ 0, num_outputs + num_ipins - 1 };
 
@@ -36,30 +38,36 @@ namespace Utils {
         };
 
         for (OPin &opin : netlist.opins()) {
-            Atom &lucky_atom = get_atom(atom_dist(eng));
-            OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
+            if (connect_dist(eng) < connect_prob) {
+                Atom &lucky_atom = get_atom(atom_dist(eng));
+                OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
 
-            IPort &iport = opin.get_iport();
-            connect(iport, lucky_oport);
+                IPort &iport = opin.get_iport();
+                connect(iport, lucky_oport);
+            }
         }
 
         for (Atom &lut : netlist.luts()) {
             for (int i = 0; i < num_inputs; ++i) {
-                Atom &lucky_atom = get_atom(atom_dist(eng));
-                OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
+                if (connect_dist(eng) < connect_prob) {
+                    Atom &lucky_atom = get_atom(atom_dist(eng));
+                    OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
 
-                IPort &iport = lut.get_iport(i);
-                connect(iport, lucky_oport);
+                    IPort &iport = lut.get_iport(i);
+                    connect(iport, lucky_oport);
+                }
             }
         }
 
         for (Atom &ff : netlist.ffs()) {
             for (int i = 0; i < num_inputs; ++i) {
-                Atom &lucky_atom = get_atom(atom_dist(eng));
-                OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
+                if (connect_dist(eng) < connect_prob) {
+                    Atom &lucky_atom = get_atom(atom_dist(eng));
+                    OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
 
-                IPort &iport = ff.get_iport(i);
-                connect(iport, lucky_oport);
+                    IPort &iport = ff.get_iport(i);
+                    connect(iport, lucky_oport);
+                }
             }
         }
 
@@ -90,7 +98,9 @@ namespace Utils {
 
         auto expand_port(const IPort &iport) {
             boost::property_tree::ptree node;
-            node.push_back(std::make_pair("", unnamed_node(*(iport.fanin()))));
+            if (iport.has_fanin()) {
+                node.push_back(std::make_pair("", unnamed_node(*(iport.fanin()))));
+            }
             return node;
         }
     }
