@@ -116,30 +116,41 @@ class Atom {
 
 public:
 
-    Atom(std::size_t max_inputs, std::size_t max_outputs, std::size_t max_fanouts)
+    enum class type {
+        LUT,
+        FF,
+        PIN
+    };
+
+    Atom(std::size_t max_inputs, std::size_t max_outputs, std::size_t max_fanouts, type t)
         :m_inputs( max_inputs, IPort{ *this } ),
-        m_outputs( max_outputs, OPort{ *this, max_fanouts } )
+        m_outputs( max_outputs, OPort{ *this, max_fanouts } ),
+        m_type{ t }
     {}
 
     Atom(const Atom &other)
         :m_inputs{ other.m_inputs },
-        m_outputs{ other.m_outputs }
+        m_outputs{ other.m_outputs },
+        m_type{ other.m_type }
     {}
 
     Atom(Atom &&other)
         :m_inputs{ std::move(other.m_inputs) },
-        m_outputs{ std::move(other.m_outputs) }
+        m_outputs{ std::move(other.m_outputs) },
+        m_type{ other.m_type }
     {}
 
     Atom &operator=(const Atom &other) {
         m_inputs = other.m_inputs;
         m_outputs = other.m_outputs;
+        m_type = other.m_type;
         return *this;
     }
 
     Atom &operator=(Atom &&other) {
         m_inputs = std::move(other.m_inputs);
         m_outputs = std::move(other.m_outputs);
+        m_type = other.m_type;
         return *this;
     }
 
@@ -201,11 +212,14 @@ public:
 
     inline bool inputs_full() const { return num_unconnected_input() == 0; }
     inline bool outputs_full() const { return num_unconnected_output() == 0; }
+    
+    type get_type() const { return m_type; }
 
 protected:
 
     std::vector<IPort> m_inputs;
     std::vector<OPort> m_outputs;
+    type m_type;
 
 };
 
@@ -214,7 +228,7 @@ class IPin : public Atom {
 public:
 
     IPin(std::size_t max_fanouts)
-        :Atom{ 0, 1, max_fanouts }
+        :Atom{ 0, 1, max_fanouts, Atom::type::PIN }
     {}
 
     IPin(const IPin &other)
@@ -250,7 +264,7 @@ class OPin : public Atom {
 public:
 
     OPin()
-        :Atom{ 1, 0, 0 }
+        :Atom{ 1, 0, 0, Atom::type::PIN }
     {}
 
     OPin(const OPin &other)
@@ -289,8 +303,8 @@ public:
 
     Netlist(std::size_t num_ipins, std::size_t num_opins, std::size_t num_luts, std::size_t num_ffs,
             std::size_t max_inputs, std::size_t max_outputs, std::size_t max_fanouts)
-        :m_luts( num_luts, Atom{ max_inputs, max_outputs, max_fanouts } ),
-        m_ffs( num_ffs, Atom{ max_inputs, max_outputs, max_fanouts } ),
+        :m_luts( num_luts, Atom{ max_inputs, max_outputs, max_fanouts, Atom::type::LUT } ),
+        m_ffs( num_ffs, Atom{ max_inputs, max_outputs, max_fanouts, Atom::type::FF } ),
         m_ipins( num_ipins, IPin{ max_fanouts } ),
         m_opins( num_opins )
     {
