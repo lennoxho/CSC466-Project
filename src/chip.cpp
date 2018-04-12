@@ -1,6 +1,39 @@
 #include <numeric>
 #include "chip.h"
 
+std::size_t Chip::swap(const Atom &lhs_atom, std::size_t idx) {
+    auto lhs_iter = m_board.right.find(&lhs_atom);
+    RUNTIME_ASSERT(lhs_iter != m_board.right.end());
+
+    std::size_t lhs_ori_idx = lhs_iter->second;
+    std::size_t rhs_ori_idx = (lhs_ori_idx % 2 == 0) ? lut_to_idx(idx) : ff_to_idx(idx);
+    RUNTIME_ASSERT(rhs_ori_idx < m_width * m_height);
+    if (lhs_ori_idx == rhs_ori_idx) return idx;
+
+    m_bbox -= bbox_for_atom(lhs_atom);
+
+    auto rhs_iter = m_board.left.find(rhs_ori_idx);
+    if (rhs_iter != m_board.left.end()) {
+        const Atom &rhs_atom = *rhs_iter->second;
+        m_bbox -= bbox_for_atom(rhs_atom);
+
+        m_board.right.erase(lhs_iter);
+        m_board.left.erase(rhs_iter);
+        m_board.insert({ lhs_ori_idx,  &rhs_atom });
+        m_board.insert({ rhs_ori_idx,  &lhs_atom });
+
+        m_bbox += bbox_for_atom(rhs_atom);
+        m_bbox += bbox_for_atom(lhs_atom);
+    }
+    else {
+        m_board.right.erase(lhs_iter);
+        m_board.insert({ rhs_ori_idx,  &lhs_atom });
+        m_bbox += bbox_for_atom(lhs_atom);
+    }
+
+    return (lhs_ori_idx % 2 == 0) ? lhs_ori_idx / 2 : (lhs_ori_idx - 1) / 2;
+}
+
 void Chip::initial_random_placement() {
     std::size_t i = 0;
     for (const auto &lut : m_netlist.luts()) {
@@ -13,19 +46,6 @@ void Chip::initial_random_placement() {
         ++i;
     }
     RUNTIME_ASSERT(m_board.size() == m_netlist.num_luts() + m_netlist.num_ffs());
-
-    i = 0;
-    for (const auto &ipin : m_netlist.ipins()) {
-        m_ipins.insert({ i, static_cast<const Atom*>(&ipin) });
-        ++i;
-    }
-    RUNTIME_ASSERT(m_ipins.size() == m_netlist.num_ipins());
-    i = 0;
-    for (const auto &opin : m_netlist.opins()) {
-        m_opins.insert({ i, static_cast<const Atom*>(&opin) });
-        ++i;
-    }
-    RUNTIME_ASSERT(m_opins.size() == m_netlist.num_opins());
 }
 
 std::int64_t Chip::initial_bbox() {
@@ -48,9 +68,8 @@ std::int64_t Chip::initial_bbox() {
 
 std::int64_t Chip::bbox_for_net(const Net &net) const {
     coord src_coord;
-    auto iter = m_ipins.right.find(&net.get_atom());
-    if (iter != m_ipins.right.end()) {
-        src_coord = ipin_to_coord(iter->second);
+    if (auto ipin_opt = get_coord(static_cast<const IPin&>(net.get_atom()))) {
+        src_coord = *ipin_opt;
     }
     else {
         src_coord = get_coord(net.get_atom());
@@ -62,9 +81,8 @@ std::int64_t Chip::bbox_for_net(const Net &net) const {
 
     for (const IPort* iport : net) {
         coord dest_coord;
-        auto iter = m_opins.right.find(&iport->get_atom());
-        if (iter != m_opins.right.end()) {
-            dest_coord = opin_to_coord(iter->second);
+        if (auto opin_opt = get_coord(static_cast<const OPin&>(net.get_atom()))) {
+            dest_coord = *opin_opt;
         }
         else {
             dest_coord = get_coord(iport->get_atom());
@@ -93,4 +111,9 @@ std::int64_t Chip::bbox_for_atom(const Atom &atom) const {
     total += std::accumulate(atom.begin_outputs(), atom.end_outputs(), 0, acc_oports);
 
     return total;
+}
+
+bool Chip::legalize_plan(const Plan &plan) {
+    // TODO
+    return false;
 }

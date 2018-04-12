@@ -48,7 +48,7 @@ namespace Utils {
         }
 
         for (Atom &lut : netlist.luts()) {
-            for (int i = 0; i < num_inputs; ++i) {
+            for (std::size_t i = 0; i < num_inputs; ++i) {
                 if (connect_dist(eng) < connect_prob) {
                     Atom &lucky_atom = get_atom(atom_dist(eng));
                     OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
@@ -60,7 +60,7 @@ namespace Utils {
         }
 
         for (Atom &ff : netlist.ffs()) {
-            for (int i = 0; i < num_inputs; ++i) {
+            for (std::size_t i = 0; i < num_inputs; ++i) {
                 if (connect_dist(eng) < connect_prob) {
                     Atom &lucky_atom = get_atom(atom_dist(eng));
                     OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
