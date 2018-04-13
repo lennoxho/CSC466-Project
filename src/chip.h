@@ -14,8 +14,7 @@ public:
     };
 
     Chip(std::size_t width, std::size_t height, const Netlist &netlist)
-        :m_bbox{ 0 },
-        m_width{ width },
+        :m_width{ width },
         m_height{ height },
         m_netlist{ netlist }
     {
@@ -31,11 +30,18 @@ public:
         m_height{ plan.get_height() },
         m_netlist{ plan.get_netlist() }
     {
-        RUNTIME_ASSERT(legalize_plan(plan));
+        legalize_plan(plan);
         m_bbox = initial_bbox();
     }
 
-    Chip(const Chip&) = delete;
+    Chip(Chip &&other)
+        :m_bbox{ other.m_bbox },
+        m_width{ other.m_width },
+        m_height{ other.m_height },
+        m_netlist{ other.m_netlist },
+        m_board{ std::move(other.m_board) }
+    {}
+    
     Chip operator=(const Chip&) = delete;
 
     const std::size_t get_width() const { return m_width; }
@@ -89,7 +95,7 @@ private:
     std::int64_t bbox_for_net(const Net &net) const;
     std::int64_t bbox_for_atom(const Atom &atom) const;
 
-    bool legalize_plan(const Plan &plan);
+    void legalize_plan(const Plan &plan);
 
     static inline std::size_t lut_to_idx(std::size_t lut_idx) {
         return lut_idx * 2;

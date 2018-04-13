@@ -17,12 +17,13 @@ void Plan::assign_coords(const Partition &partition, const std::vector<coord> &c
     }
 }
 
-void Plan::recursive_partition() {
+void Plan::recursive_partition(bool split_horizontally) {
     auto old_partitions = std::move(m_partitions);
-    RUNTIME_ASSERT(m_partitions.empty());
+    auto old_bounds = std::move(m_partition_bounds);
+    
     m_partitions.reserve(old_partitions.size() * 2);
+    m_partition_bounds.reserve(old_bounds.size() * 2);
 
-    const bool split_horizontally = true;
     auto sort_by_coord = [&](const Atom* lhs, const Atom* rhs) {
         const coord &lhs_c = m_board.right.at(lhs);
         const coord &rhs_c = m_board.right.at(rhs);
@@ -30,10 +31,22 @@ void Plan::recursive_partition() {
                                     coord::y_major_lt(lhs_c, rhs_c);
     };
 
-    for (auto &partition : old_partitions) {
+    for (auto entry : boost::combine(old_partitions, old_bounds)) {
+        Partition &partition = boost::get<0>(entry);
+        const plan_region &region = boost::get<1>(entry);
+        
         auto mid_iter = partition.begin() + partition.size() / 2;
         std::partial_sort(partition.begin(), mid_iter, partition.end(), sort_by_coord);
 
+        if (split_horizontally) {
+            m_partition_bounds.emplace_back(bound{ region.first.begin, get_coord(**mid_iter).x }, region.second);
+            m_partition_bounds.emplace_back(bound{ get_coord(**mid_iter).x, region.first.end }, region.second);
+        }
+        else {
+            m_partition_bounds.emplace_back(region.first, bound{ region.second.begin, get_coord(**mid_iter).y });
+            m_partition_bounds.emplace_back(region.first, bound{ get_coord(**mid_iter).y, region.second.end });
+        }
+        
         m_partitions.emplace_back(mid_iter, partition.end());
         partition.erase(mid_iter, partition.end());
         m_partitions.emplace_back(std::move(partition));
@@ -51,6 +64,9 @@ void Plan::initial_setup() {
     auto insert_initial_coord = [&](const Atom &atom) {
         m_board.insert({ { 0.0, 0.0 }, &atom });
     };
+    
+    m_partition_bounds.emplace_back(bound{ 0.0, static_cast<double>(m_height) }, 
+                                    bound{ 0.0, static_cast<double>(m_width) });
 
     std::for_each(m_netlist.begin_luts(), m_netlist.end_luts(), insert_initial_coord);
     std::for_each(m_netlist.begin_ffs(), m_netlist.end_ffs(), insert_initial_coord);

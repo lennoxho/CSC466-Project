@@ -113,7 +113,24 @@ std::int64_t Chip::bbox_for_atom(const Atom &atom) const {
     return total;
 }
 
-bool Chip::legalize_plan(const Plan &plan) {
-    // TODO
-    return false;
+void Chip::legalize_plan(const Plan &plan) {
+    for (const auto &entry : plan.board()) {
+        coord new_coord{ static_cast<std::int64_t>(entry.second.x), 
+                         static_cast<std::int64_t>(entry.second.y) };
+        RUNTIME_ASSERT(new_coord.x >= 0 && new_coord.x < static_cast<std::int64_t>(m_height));
+        RUNTIME_ASSERT(new_coord.y >= 0 && new_coord.x < static_cast<std::int64_t>(m_width));
+        std::size_t idx = coord_to_idx(new_coord);
+        
+        if ((entry.first->get_type() == Atom::type::LUT && idx % 2 == 1) ||
+            (entry.first->get_type() == Atom::type::FF && idx % 2 == 0))
+        {
+            ++idx;
+        }
+        
+        auto iter = m_board.left.find(idx);
+        while (iter != m_board.left.end()) idx += 2;
+        
+        RUNTIME_ASSERT(idx < m_width*m_height);
+        m_board.insert({ idx, entry.first });
+    }
 }

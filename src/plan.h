@@ -26,6 +26,13 @@ public:
         double x;
         double y;
     };
+    
+    struct bound {
+        double begin;
+        double end;
+    };
+    
+    using plan_region = std::pair<bound, bound>;
 
     Plan(std::size_t width, std::size_t height, const Netlist &netlist)
         :m_width{ width },
@@ -52,6 +59,14 @@ public:
     inline auto begin_partitions() const { return m_partitions.begin(); }
     inline auto end_partitions() { return m_partitions.end(); }
     inline auto end_partitions() const { return m_partitions.end(); }
+    
+    inline auto &bounds() { return m_partition_bounds; }
+    inline auto &bounds() const { return m_partition_bounds; }
+
+    inline auto begin_bounds() { return m_partition_bounds.begin(); }
+    inline auto begin_bounds() const { return m_partition_bounds.begin(); }
+    inline auto end_bounds() { return m_partition_bounds.end(); }
+    inline auto end_bounds() const { return m_partition_bounds.end(); }
 
     inline auto &board() { return m_board.right; }
     inline auto &board() const { return m_board.right; }
@@ -98,7 +113,7 @@ public:
     }
 
     void assign_coords(const Partition &partition, const std::vector<coord> &coords);
-    void recursive_partition();
+    void recursive_partition(bool split_horizontally);
 
 private:
 
@@ -108,6 +123,7 @@ private:
     std::size_t m_height;
     const Netlist &m_netlist;
     std::vector<Partition> m_partitions;
+    std::vector<plan_region> m_partition_bounds;
     boost::bimap<coord, const Atom*> m_board;
 
 };
