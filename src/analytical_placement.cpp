@@ -123,7 +123,7 @@ namespace Utils {
             }
 
             if (met != nullptr) {
-                met->snapshot() << "ss " << i << ":\n";
+                met->snapshot() << "ss " << i << " (" << width << "," << height << "):\n";
                 dump_plan(plan, met->snapshot());
             }
         }
