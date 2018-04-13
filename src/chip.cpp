@@ -96,7 +96,6 @@ std::int64_t Chip::bbox_for_net(const Net &net) const {
 
     std::int64_t x_diff = max_x - min_x;
     std::int64_t y_diff = max_y - min_y;
-    //return x_diff*x_diff + y_diff*y_diff;
     return std::abs(x_diff) + std::abs(y_diff);
 }
 
@@ -118,9 +117,12 @@ void Chip::legalize_plan(const Plan &plan) {
     for (const auto &entry : plan.board()) {
         coord new_coord{ static_cast<std::int64_t>(entry.second.x), 
                          static_cast<std::int64_t>(entry.second.y) };
-        RUNTIME_ASSERT(new_coord.x >= 0 && new_coord.x < static_cast<std::int64_t>(m_height));
-        RUNTIME_ASSERT(new_coord.y >= 0 && new_coord.y < static_cast<std::int64_t>(m_width));
-        std::size_t idx = coord_to_idx(new_coord);
+        new_coord.x = std::max(std::int64_t(0), new_coord.x);
+        new_coord.x = std::min(static_cast<std::int64_t>(m_height)-2, new_coord.x);
+        new_coord.y = std::max(std::int64_t(0), new_coord.y);
+        new_coord.y = std::min(static_cast<std::int64_t>(m_width)-2, new_coord.y);
+        std::size_t ori_idx = coord_to_idx(new_coord);
+        std::size_t idx = ori_idx;
         
         if ((entry.first->get_type() == Atom::type::LUT && idx % 2 == 1) ||
             (entry.first->get_type() == Atom::type::FF && idx % 2 == 0))
@@ -129,12 +131,22 @@ void Chip::legalize_plan(const Plan &plan) {
         }
         
         std::size_t max_idx = m_width * m_height;
-        auto iter = m_board.left.find(idx);
-        while (iter != m_board.left.end() && idx < max_idx) {
-            idx += 2;
-            iter = m_board.left.find(idx);
+
+        std::int64_t curr_idx = static_cast<std::int64_t>(idx);
+        auto iter = m_board.left.find(static_cast<std::size_t>(curr_idx));
+
+        while (iter != m_board.left.end() && curr_idx - 2 > 0) {    
+            curr_idx -= 2;
+            iter = m_board.left.find(static_cast<std::size_t>(curr_idx));
         }
-        
+
+        if (iter != m_board.left.end()) curr_idx = static_cast<std::int64_t>(idx);
+        while (iter != m_board.left.end() && curr_idx + 2 < max_idx) {
+            curr_idx += 2;
+            iter = m_board.left.find(static_cast<std::size_t>(curr_idx));
+        }
+
+        idx = static_cast<std::size_t>(curr_idx);
         RUNTIME_ASSERT(idx < max_idx);
         m_board.insert({ idx, entry.first });
     }

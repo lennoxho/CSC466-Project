@@ -1,6 +1,7 @@
 #include <Eigen/Dense>
 #include <boost/range/combine.hpp>
 #include <boost/range/adaptors.hpp>
+#include <numeric>
 #include "plan.h"
 #include "placement.h"
 
@@ -10,6 +11,7 @@ namespace Utils {
 
         Plan::coord get_pin_coord(const Plan &plan, const Atom &atom, const Plan::plan_region &region) {
             Plan::coord nearest_coord;
+
             if (auto c = plan.get_coord(static_cast<const IPin&>(atom))) {
                 nearest_coord = *c;
             }
@@ -46,8 +48,14 @@ namespace Utils {
     }
 
     Chip quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, metric_consumer* met) {
+        constexpr double pin_weight_factor = 2;
+
         Plan plan{ width, height, netlist };
         auto has_fanin = [](const IPort &iport) { return iport.has_fanin(); };
+
+        std::int64_t avg_conn_per_ipin = std::accumulate(netlist.begin_ipins(), netlist.end_ipins(), 0,
+            [](std::int64_t prev, const IPin &ipin) { return prev + ipin.get_oport().size(); });
+        avg_conn_per_ipin /= netlist.num_ipins();
 
         bool split_horizontally = true;
         for (int i = 0; i < num_iter; ++i) {
@@ -60,7 +68,7 @@ namespace Utils {
                 const Plan::Partition &partition = boost::get<0>(entry);
                 const Plan::plan_region &region = boost::get<1>(entry);
                 if (partition.size() == 0) continue;
-
+                
                 std::unordered_map<const Atom*, std::size_t> atom_to_index;
                 std::size_t i = 0;
                 for (const Atom* atom : partition) {
@@ -86,9 +94,12 @@ namespace Utils {
                             A(x, y) += -inv_weight;
                         }
                         else {
-                            Plan::coord target_coord = impl::get_pin_coord(plan, target_atom, region);
-                            b_x(x) += inv_weight * target_coord.x;
-                            b_y(x) += inv_weight * target_coord.y;
+                            auto coord = impl::get_pin_coord(plan, target_atom, region);
+                            if (target_atom.get_type() == Atom::type::IPIN || target_atom.get_type() == Atom::type::OPIN) inv_weight *= pin_weight_factor;
+                            if (target_atom.get_type() == Atom::type::OPIN) inv_weight *= avg_conn_per_ipin;
+
+                            b_x(x) += inv_weight * coord.x;
+                            b_y(x) += inv_weight * coord.y;
                         }
                     };
                     
@@ -101,6 +112,7 @@ namespace Utils {
                     }
 
                     for (const OPort &oport : atom->outputs()) {
+                        if (oport.empty()) continue;
                         double inv_weight = 1.0 / oport.size();
 
                         for (const IPort* target_iport : oport) {

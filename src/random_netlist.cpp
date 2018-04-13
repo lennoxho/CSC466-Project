@@ -14,10 +14,13 @@ namespace Utils {
         Netlist netlist{ num_ipins, num_opins, num_luts, num_ffs, num_inputs, num_outputs, 10000000 };
 
         static constexpr double connect_prob = 0.25;
+        static constexpr std::size_t atom_skew = 150;
+
         std::mt19937 eng;
         std::uniform_real_distribution<> connect_dist{ 0.0, 1.0 };
         std::uniform_int_distribution<std::size_t> atom_dist{ 0, num_luts + num_ffs - 1 };
-        std::uniform_int_distribution<std::size_t> oport_dist{ 0, num_outputs + num_ipins - 1 };
+        std::uniform_int_distribution<std::size_t> oport_dist{ 0, num_outputs*atom_skew + num_ipins - 1 };
+        std::uniform_int_distribution<std::size_t> ipin_dist{ 0, num_ipins - 1 };
 
         auto get_atom = [&](std::size_t idx) -> Atom& {
             if (idx < num_luts) {
@@ -29,22 +32,21 @@ namespace Utils {
         };
 
         auto get_oport = [&](Atom &atom, std::size_t idx) -> OPort& {
-            if (idx < num_outputs) {
-                return atom.get_oport(idx);
+            std::size_t real_idx = idx % num_outputs;
+            if (idx / num_outputs < atom_skew) {
+                return atom.get_oport(real_idx);
             }
             else {
-                return get<IPin>(netlist, idx - num_outputs).get_oport();
+                return get<IPin>(netlist, ipin_dist(eng)).get_oport();
             }
         };
 
         for (OPin &opin : netlist.opins()) {
-            if (connect_dist(eng) < connect_prob) {
-                Atom &lucky_atom = get_atom(atom_dist(eng));
-                OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
+            Atom &lucky_atom = get_atom(atom_dist(eng));
+            OPort &lucky_oport = get_oport(lucky_atom, oport_dist(eng));
 
-                IPort &iport = opin.get_iport();
-                connect(iport, lucky_oport);
-            }
+            IPort &iport = opin.get_iport();
+            connect(iport, lucky_oport);
         }
 
         for (Atom &lut : netlist.luts()) {

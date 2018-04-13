@@ -33,7 +33,7 @@ int main() {
     {
         Utils::metric_consumer met{ "qp_iter.out", "qp_ss.out" };
 
-        Chip chip{ Utils::quadratic_placement(width, height, netlist, 8, &met) };
+        Chip chip{ Utils::quadratic_placement(width, height, netlist, 2, &met) };
         Utils::simulated_annealing(chip, 10, 2, 0.5, 0.5, &met);
         std::cout << chip.get_bbox() << "\n";
 

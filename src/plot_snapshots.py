@@ -5,7 +5,7 @@ import re
 
 SAVE_PLOTS = True
 SNAPSHOT_HEADER_RE = re.compile(r"ss \d+ \((\d+),(\d+)\):")
-COORD_HEADER_RE = re.compile(r"\((\d+(?:\.\d+)?),(\d+(?:\.\d+)?)\)")
+COORD_HEADER_RE = re.compile(r"\((-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)\)")
 
 def get_snapshots(filepath):
     width = None

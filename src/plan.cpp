@@ -43,12 +43,18 @@ void Plan::recursive_partition(bool split_horizontally) {
             std::partial_sort(partition.begin(), mid_iter, partition.end(), sort_by_coord);
 
             if (split_horizontally) {
-                m_partition_bounds.emplace_back(bound{ region.first.begin, get_coord(**mid_iter).x }, region.second);
-                m_partition_bounds.emplace_back(bound{ get_coord(**mid_iter).x, region.first.end }, region.second);
+                double mid_x = get_coord(**mid_iter).x;
+                mid_x = std::max(region.first.begin, mid_x);
+                mid_x = std::min(region.first.end, mid_x);
+                m_partition_bounds.emplace_back(bound{ region.first.begin, mid_x }, region.second);
+                m_partition_bounds.emplace_back(bound{ mid_x, region.first.end }, region.second);
             }
             else {
-                m_partition_bounds.emplace_back(region.first, bound{ region.second.begin, get_coord(**mid_iter).y });
-                m_partition_bounds.emplace_back(region.first, bound{ get_coord(**mid_iter).y, region.second.end });
+                double mid_y = get_coord(**mid_iter).y;
+                mid_y = std::max(region.second.begin, mid_y);
+                mid_y = std::min(region.second.end, mid_y);
+                m_partition_bounds.emplace_back(region.first, bound{ region.second.begin, mid_y });
+                m_partition_bounds.emplace_back(region.first, bound{ mid_y, region.second.end });
             }
             
             m_partitions.emplace_back(mid_iter, partition.end());

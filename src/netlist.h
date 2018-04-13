@@ -119,7 +119,8 @@ public:
     enum class type {
         LUT,
         FF,
-        PIN
+        IPIN,
+        OPIN
     };
 
     Atom(std::size_t max_inputs, std::size_t max_outputs, std::size_t max_fanouts, type t)
@@ -228,7 +229,7 @@ class IPin : public Atom {
 public:
 
     IPin(std::size_t max_fanouts)
-        :Atom{ 0, 1, max_fanouts, Atom::type::PIN }
+        :Atom{ 0, 1, max_fanouts, Atom::type::IPIN }
     {}
 
     IPin(const IPin &other)
@@ -264,7 +265,7 @@ class OPin : public Atom {
 public:
 
     OPin()
-        :Atom{ 1, 0, 0, Atom::type::PIN }
+        :Atom{ 1, 0, 0, Atom::type::OPIN }
     {}
 
     OPin(const OPin &other)
