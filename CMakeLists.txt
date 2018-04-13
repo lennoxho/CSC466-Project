@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.1)
 project(CSC466-project)
 
+set(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}")
+if (NOT EIGEN3_INCLUDE_DIR)
+    message(FATAL_ERROR "EIGEN3_INCLUDE_DIR not set!")
+endif()
+include_directories("${EIGEN3_INCLUDE_DIR}")
+
 find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
+include_directories("${Boost_INCLUDE_DIRS}")
 
 if (NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)

@@ -27,14 +27,17 @@ def plot_iterates(y_plot, ori_filepath):
 
     plt.grid()
     plt.tight_layout()
-    plt.savefig(ori_filepath + ".png")
-    plt.close()
+    plt.show()
+    #plt.savefig(ori_filepath + ".png")
+    #plt.close()
 
 if __name__ == "__main__":
-    if (len(sys.argv) != 2):
-        print("USAGE:  python plot_iterations.py <filename>")
+    if (len(sys.argv) < 2):
+        print("USAGE:  python plot_iterations.py <filename> [<filename>...]")
         exit(1)
 
-    filepath = sys.argv[1].strip()
-    y_plot = get_points(filepath)
-    plot_iterates(y_plot, filepath)
+    files = sys.argv[1:]
+    for filepath in files:
+        filepath = filepath.strip()
+        y_plot = get_points(filepath)
+        plot_iterates(y_plot, filepath)

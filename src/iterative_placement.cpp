@@ -3,7 +3,7 @@
 
 namespace Utils {
 
-    void random_placement(Chip &chip, std::int64_t num_iter, std::ostream* os) {
+    void random_placement(Chip &chip, std::int64_t num_iter, metric_consumer* met) {
         std::mt19937 eng;
         std::bernoulli_distribution type_dist;
 
@@ -13,8 +13,8 @@ namespace Utils {
 
         for (std::int64_t i = 0; i < num_iter; ++i) {
             std::int64_t prev_bbox = chip.get_bbox();
-            if (os != nullptr) {
-                *os << prev_bbox << "\n";
+            if (met != nullptr) {
+                met->iter() << prev_bbox << "\n";
             }
 
             const Atom &atom_to_swap = type_dist(eng) ? get<Netlist::LUT>(chip.get_netlist(), lut_dist(eng)) :
@@ -28,7 +28,7 @@ namespace Utils {
         }
     }
 
-    void simulated_annealing(Chip &chip, std::int64_t num_iter, std::size_t num_swap_per_atom, double hot, double cooling_factor, std::ostream* os) {
+    void simulated_annealing(Chip &chip, std::int64_t num_iter, std::size_t num_swap_per_atom, double hot, double cooling_factor, metric_consumer* met) {
         std::mt19937 eng;
         std::bernoulli_distribution type_dist;
 
@@ -42,8 +42,8 @@ namespace Utils {
         for (std::int64_t i = 0; i < num_iter; ++i) {
             for (std::size_t j = 0; j < num_swap_per_atom * num_atoms; ++j) {
                 std::int64_t prev_bbox = chip.get_bbox();
-                if (os != nullptr) {
-                    *os << prev_bbox << "\n";
+                if (met != nullptr) {
+                    met->iter() << prev_bbox << "\n";
                 }
 
                 const Atom &atom_to_swap = type_dist(eng) ? get<Netlist::LUT>(chip.get_netlist(), lut_dist(eng)) :

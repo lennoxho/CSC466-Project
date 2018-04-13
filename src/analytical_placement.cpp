@@ -1,13 +1,54 @@
+#include <Eigen/Dense>
 #include <boost/range/combine.hpp>
-#include <unordered_set>
+#include <boost/range/adaptors.hpp>
 #include "plan.h"
 #include "placement.h"
 
 namespace Utils {
 
-    Chip analytical_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, std::ostream* os) {
+    namespace impl {
+
+        Plan::coord get_pin_coord(const Plan &plan, const Atom &atom, const Plan::plan_region &region) {
+            Plan::coord nearest_coord;
+            if (auto c = plan.get_coord(static_cast<const IPin&>(atom))) {
+                nearest_coord = *c;
+            }
+            else if (auto c = plan.get_coord(static_cast<const OPin&>(atom))) {
+                nearest_coord = *c;
+            }
+            else {
+                nearest_coord = plan.get_coord(atom);
+            }
+
+            if (nearest_coord.x < region.first.begin) {
+                nearest_coord.x = region.first.begin;
+            }
+            else if (nearest_coord.x > region.first.end) {
+                nearest_coord.x = region.first.end;
+            }
+            
+            if (nearest_coord.y < region.second.begin) {
+                nearest_coord.y = region.second.begin;
+            }
+            else if (nearest_coord.y > region.second.end) {
+                nearest_coord.y = region.second.end;
+            }
+
+            return nearest_coord;
+        }
+
+    }
+
+    void dump_plan(const Plan &plan, std::ostream &os) {
+        for (const auto &entry : plan.board()) {
+            os << "(" << entry.second.x << "," << entry.second.y << ")\n";
+        }
+    }
+
+    Chip quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, metric_consumer* met) {
         Plan plan{ width, height, netlist };
-        
+        auto has_fanin = [](const IPort &iport) { return iport.has_fanin(); };
+
         bool split_horizontally = true;
         for (int i = 0; i < num_iter; ++i) {
             if (i > 0) {
@@ -18,11 +59,72 @@ namespace Utils {
             for (const auto &entry : boost::combine(plan.partitions(), plan.bounds())) {
                 const Plan::Partition &partition = boost::get<0>(entry);
                 const Plan::plan_region &region = boost::get<1>(entry);
+                if (partition.size() == 0) continue;
+
+                std::unordered_map<const Atom*, std::size_t> atom_to_index;
+                std::size_t i = 0;
+                for (const Atom* atom : partition) {
+                    atom_to_index[atom] = i++;
+                }
                 
-                std::unordered_set<const Atom*> atoms_in_partition{ partition.begin(), partition.end() };
-                std::vector<Plan::coord> solution(partition.size());
-                
-                // TODO
+                Eigen::MatrixXd A = Eigen::MatrixXd::Zero(partition.size(), partition.size());
+
+                Eigen::VectorXd b_x = Eigen::VectorXd::Zero(partition.size());
+                Eigen::VectorXd b_y = Eigen::VectorXd::Zero(partition.size());
+
+                for (std::size_t x = 0; x < partition.size(); ++x) {
+                    const Atom* atom = partition[x];
+
+                    auto register_target = [&](double inv_weight, const Atom &target_atom) {
+                        if (&target_atom == atom) return;
+                        A(x, x) += inv_weight;
+
+                        auto idx_iter = atom_to_index.find(&target_atom);
+                        if (idx_iter != atom_to_index.end()) {
+                            std::size_t y = idx_iter->second;
+                            RUNTIME_ASSERT(x != y);
+                            A(x, y) += -inv_weight;
+                        }
+                        else {
+                            Plan::coord target_coord = impl::get_pin_coord(plan, target_atom, region);
+                            b_x(x) += inv_weight * target_coord.x;
+                            b_y(x) += inv_weight * target_coord.y;
+                        }
+                    };
+                    
+                    for (const IPort &iport : atom->inputs() | boost::adaptors::filtered(has_fanin)) {
+                        const OPort* target_oport = iport.fanin();
+                        double inv_weight = 1.0 / target_oport->size();
+                        const Atom &target_atom = target_oport->get_atom();
+
+                        register_target(inv_weight, target_atom);
+                    }
+
+                    for (const OPort &oport : atom->outputs()) {
+                        double inv_weight = 1.0 / oport.size();
+
+                        for (const IPort* target_iport : oport) {
+                            const Atom &target_atom = target_iport->get_atom();
+
+                            register_target(inv_weight, target_atom);
+                        }
+                    }
+                }
+
+                A.ldlt().solveInPlace(b_x);
+                A.ldlt().solveInPlace(b_y);
+
+                std::vector<Plan::coord> sol(partition.size());
+                for (std::size_t j = 0; j < partition.size(); ++j) {
+                    sol[j] = Plan::coord{ b_x(j), b_y(j) };
+                }
+
+                plan.assign_coords(partition, sol);
+            }
+
+            if (met != nullptr) {
+                met->snapshot() << "ss " << i << ":\n";
+                dump_plan(plan, met->snapshot());
             }
         }
         

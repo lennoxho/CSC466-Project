@@ -2,6 +2,7 @@
 
 #include <boost/optional.hpp>
 #include <boost/bimap.hpp>
+#include <unordered_map>
 #include "netlist.h"
 
 class Plan {
@@ -42,6 +43,7 @@ public:
         RUNTIME_ASSERT(width * height >= 2 * std::max(netlist.num_ffs(), netlist.num_luts()));
         RUNTIME_ASSERT(height >= netlist.num_ipins());
         RUNTIME_ASSERT(height >= netlist.num_opins());
+        initial_setup();
     }
 
     Plan(const Plan&) = delete;
@@ -68,8 +70,8 @@ public:
     inline auto end_bounds() { return m_partition_bounds.end(); }
     inline auto end_bounds() const { return m_partition_bounds.end(); }
 
-    inline auto &board() { return m_board.right; }
-    inline auto &board() const { return m_board.right; }
+    inline auto &board() { return m_board; }
+    inline auto &board() const { return m_board; }
 
     inline auto begin_board() { return board().begin(); }
     inline auto begin_board() const { return board().begin(); }
@@ -93,8 +95,8 @@ public:
     inline auto end_opins() const { return opins().end(); }
 
     inline coord get_coord(const Atom &atom) const {
-        auto iter = m_board.right.find(&atom);
-        RUNTIME_ASSERT(iter != m_board.right.end());
+        auto iter = m_board.find(&atom);
+        RUNTIME_ASSERT(iter != m_board.end());
         return iter->second;
     }
 
@@ -124,6 +126,6 @@ private:
     const Netlist &m_netlist;
     std::vector<Partition> m_partitions;
     std::vector<plan_region> m_partition_bounds;
-    boost::bimap<coord, const Atom*> m_board;
+    std::unordered_map<const Atom*, coord> m_board;
 
 };

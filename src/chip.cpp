@@ -1,4 +1,5 @@
 #include <numeric>
+#include <iostream>
 #include "chip.h"
 
 std::size_t Chip::swap(const Atom &lhs_atom, std::size_t idx) {
@@ -6,7 +7,7 @@ std::size_t Chip::swap(const Atom &lhs_atom, std::size_t idx) {
     RUNTIME_ASSERT(lhs_iter != m_board.right.end());
 
     std::size_t lhs_ori_idx = lhs_iter->second;
-    std::size_t rhs_ori_idx = (lhs_ori_idx % 2 == 0) ? lut_to_idx(idx) : ff_to_idx(idx);
+    std::size_t rhs_ori_idx = lhs_atom.get_type() == Atom::type::LUT ? lut_to_idx(idx) : ff_to_idx(idx);
     RUNTIME_ASSERT(rhs_ori_idx < m_width * m_height);
     if (lhs_ori_idx == rhs_ori_idx) return idx;
 
@@ -31,7 +32,7 @@ std::size_t Chip::swap(const Atom &lhs_atom, std::size_t idx) {
         m_bbox += bbox_for_atom(lhs_atom);
     }
 
-    return (lhs_ori_idx % 2 == 0) ? lhs_ori_idx / 2 : (lhs_ori_idx - 1) / 2;
+    return lhs_atom.get_type() == Atom::type::LUT ? lhs_ori_idx / 2 : (lhs_ori_idx - 1) / 2;
 }
 
 void Chip::initial_random_placement() {
@@ -49,7 +50,7 @@ void Chip::initial_random_placement() {
 }
 
 std::int64_t Chip::initial_bbox() {
-    std::int64_t total = std::accumulate(m_netlist.begin_ipins(), m_netlist.end_ipins(), 0,
+    std::int64_t total = std::accumulate(m_netlist.begin_ipins(), m_netlist.end_ipins(), std::int64_t(0),
         [&](std::int64_t prev, const IPin &ipin) { return prev + bbox_for_net(ipin.get_oport()); });
 
     auto acc_oports = [&](const auto &range) {
@@ -118,7 +119,7 @@ void Chip::legalize_plan(const Plan &plan) {
         coord new_coord{ static_cast<std::int64_t>(entry.second.x), 
                          static_cast<std::int64_t>(entry.second.y) };
         RUNTIME_ASSERT(new_coord.x >= 0 && new_coord.x < static_cast<std::int64_t>(m_height));
-        RUNTIME_ASSERT(new_coord.y >= 0 && new_coord.x < static_cast<std::int64_t>(m_width));
+        RUNTIME_ASSERT(new_coord.y >= 0 && new_coord.y < static_cast<std::int64_t>(m_width));
         std::size_t idx = coord_to_idx(new_coord);
         
         if ((entry.first->get_type() == Atom::type::LUT && idx % 2 == 1) ||
@@ -127,10 +128,14 @@ void Chip::legalize_plan(const Plan &plan) {
             ++idx;
         }
         
+        std::size_t max_idx = m_width * m_height;
         auto iter = m_board.left.find(idx);
-        while (iter != m_board.left.end()) idx += 2;
+        while (iter != m_board.left.end() && idx < max_idx) {
+            idx += 2;
+            iter = m_board.left.find(idx);
+        }
         
-        RUNTIME_ASSERT(idx < m_width*m_height);
+        RUNTIME_ASSERT(idx < max_idx);
         m_board.insert({ idx, entry.first });
     }
 }
