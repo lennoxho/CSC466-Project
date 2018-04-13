@@ -1,5 +1,6 @@
 #pragma once
 
+#include <boost/range/adaptors.hpp>
 #include "plan.h"
 
 using Net = OPort;
@@ -65,6 +66,11 @@ public:
     inline auto begin_opins() const { return opins().begin(); }
     inline auto end_opins() { return opins().end(); }
     inline auto end_opins() const { return opins().end(); }
+
+    inline auto coords() const {
+        return m_board.left
+            | boost::adaptors::transformed([&](const auto &entry) { return idx_to_coord(entry.first); });
+    }
 
     inline coord get_coord(const Atom &atom) const {
         auto iter = m_board.right.find(&atom);

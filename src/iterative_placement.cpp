@@ -3,6 +3,12 @@
 
 namespace Utils {
 
+    void dump_chip(const Chip &chip, std::ostream &os) {
+        for (const auto &entry : chip.coords()) {
+            os << "(" << entry.x << "," << entry.y << ")\n";
+        }
+    }
+
     void random_placement(Chip &chip, std::int64_t num_iter, metric_consumer* met) {
         std::mt19937 eng;
         std::bernoulli_distribution type_dist;
@@ -10,6 +16,11 @@ namespace Utils {
         std::uniform_int_distribution<std::size_t> chip_dist{ 0, chip.get_width()*chip.get_height()/2 - 1 };
         std::uniform_int_distribution<std::size_t> lut_dist{ 0, chip.get_netlist().num_luts() - 1 };
         std::uniform_int_distribution<std::size_t> ff_dist{ 0, chip.get_netlist().num_ffs() - 1 };
+
+        if (met != nullptr) {
+            met->snapshot() << "ss " << 0 << " (" << chip.get_width() << "," << chip.get_height() << "):\n";
+            dump_chip(chip, met->snapshot());
+        }
 
         for (std::int64_t i = 0; i < num_iter; ++i) {
             std::int64_t prev_bbox = chip.get_bbox();
@@ -26,6 +37,11 @@ namespace Utils {
                 chip.swap(atom_to_swap, prev_idx);
             }
         }
+
+        if (met != nullptr) {
+            met->snapshot() << "ss " << 0 << " (" << chip.get_width() << "," << chip.get_height() << "):\n";
+            dump_chip(chip, met->snapshot());
+        }
     }
 
     void simulated_annealing(Chip &chip, std::int64_t num_iter, std::size_t num_swap_per_atom, double hot, double cooling_factor, metric_consumer* met) {
@@ -37,6 +53,11 @@ namespace Utils {
         std::uniform_int_distribution<std::size_t> ff_dist{ 0, chip.get_netlist().num_ffs() - 1 };
         std::uniform_real_distribution<double> unif{ 0.0, 1.0 };
         std::size_t num_atoms = chip.get_netlist().num_luts() + chip.get_netlist().num_ffs();
+
+        if (met != nullptr) {
+            met->snapshot() << "ss " << 0 << " (" << chip.get_width() << "," << chip.get_height() << "):\n";
+            dump_chip(chip, met->snapshot());
+        }
 
         double temperature = hot;
         for (std::int64_t i = 0; i < num_iter; ++i) {
@@ -59,6 +80,11 @@ namespace Utils {
             }
 
             temperature *= cooling_factor;
+        }
+
+        if (met != nullptr) {
+            met->snapshot() << "ss " << 0 << " (" << chip.get_width() << "," << chip.get_height() << "):\n";
+            dump_chip(chip, met->snapshot());
         }
     }
 

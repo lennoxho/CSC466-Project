@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 import re
 
+SAVE_PLOTS = True
 SNAPSHOT_HEADER_RE = re.compile(r"ss \d+ \((\d+),(\d+)\):")
 COORD_HEADER_RE = re.compile(r"\((\d+(?:\.\d+)?),(\d+(?:\.\d+)?)\)")
 
@@ -52,9 +53,9 @@ def get_snapshots(filepath):
 
     return snapshots, width, height
 
-def plot_snapshots(snapshots, width, height):
-    for ss in snapshots:
-        fig = plt.figure(figsize=(15, 8))
+def plot_snapshots(snapshots, width, height, ori_filepath):
+    for i, ss in enumerate(snapshots):
+        fig = plt.figure(figsize=(8, 8))
 
         ax = plt.gca()
         ax.set_xlim([0, width])
@@ -64,7 +65,10 @@ def plot_snapshots(snapshots, width, height):
 
         plt.grid()
         plt.tight_layout()
+        if SAVE_PLOTS:
+            plt.savefig(ori_filepath + "." + str(i) + ".png")
         plt.show()
+        plt.close()
 
 if __name__ == "__main__":
     if (len(sys.argv) < 2):
@@ -75,4 +79,4 @@ if __name__ == "__main__":
     for filepath in files:
         filepath = filepath.strip()
         snapshots, width, height = get_snapshots(filepath)
-        plot_snapshots(snapshots, width, height)
+        plot_snapshots(snapshots, width, height, filepath)

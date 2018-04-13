@@ -18,7 +18,7 @@ def get_points(filepath):
     return points
 
 def plot_iterates(y_plot, ori_filepath):
-    fig = plt.figure(figsize=(15, 8))
+    fig = plt.figure(figsize=(8, 8))
 
     plt.plot(y_plot)
 
@@ -27,9 +27,10 @@ def plot_iterates(y_plot, ori_filepath):
 
     plt.grid()
     plt.tight_layout()
+    if SAVE_PLOTS:
+        plt.savefig(ori_filepath + ".png")
     plt.show()
-    #plt.savefig(ori_filepath + ".png")
-    #plt.close()
+    plt.close()
 
 if __name__ == "__main__":
     if (len(sys.argv) < 2):

@@ -13,7 +13,7 @@ namespace Utils {
     {
         Netlist netlist{ num_ipins, num_opins, num_luts, num_ffs, num_inputs, num_outputs, 10000000 };
 
-        static constexpr double connect_prob = 0.1;
+        static constexpr double connect_prob = 0.25;
         std::mt19937 eng;
         std::uniform_real_distribution<> connect_dist{ 0.0, 1.0 };
         std::uniform_int_distribution<std::size_t> atom_dist{ 0, num_luts + num_ffs - 1 };

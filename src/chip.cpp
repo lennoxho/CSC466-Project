@@ -82,7 +82,7 @@ std::int64_t Chip::bbox_for_net(const Net &net) const {
 
     for (const IPort* iport : net) {
         coord dest_coord;
-        if (auto opin_opt = get_coord(static_cast<const OPin&>(net.get_atom()))) {
+        if (auto opin_opt = get_coord(static_cast<const OPin&>(iport->get_atom()))) {
             dest_coord = *opin_opt;
         }
         else {
