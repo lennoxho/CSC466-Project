@@ -3,7 +3,8 @@
 #include <iostream>
 
 int main() {
-    Netlist netlist = Utils::random_netlist(10, 5, 1000, 1000, 3, 3);
+    std::size_t num_phases = 2;
+    Netlist netlist = Utils::random_netlist(10, 5, 1000, 1000, 3, 3, num_phases);
     Utils::dump_netlist(netlist, "netlist.out");
 
     const std::size_t width = 100;
@@ -33,7 +34,7 @@ int main() {
     {
         Utils::metric_consumer met{ "qp_iter.out", "qp_ss.out" };
 
-        Plan plan{ Utils::quadratic_placement(width, height, netlist, 2, &met) };
+        Plan plan{ Utils::quadratic_placement(width, height, netlist, 2, num_phases, &met) };
 
         Chip chip_rand{ plan };
         Utils::random_placement(chip_rand, 40000);

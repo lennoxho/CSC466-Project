@@ -448,7 +448,7 @@ namespace Utils {
     inline const auto &get<OPin>(const Netlist &netlist, std::size_t idx) { return Access::get_opins(netlist)[idx]; }
 
     Netlist random_netlist(std::size_t num_ipins, std::size_t num_opins, std::size_t num_luts,
-        std::size_t num_ffs, std::size_t num_inputs, std::size_t num_outputs);
+        std::size_t num_ffs, std::size_t num_inputs, std::size_t num_outputs, std::size_t num_phases = 1);
 
     void dump_netlist(const Netlist &netlist, const std::string &filepath);
 

@@ -47,8 +47,8 @@ namespace Utils {
         }
     }
 
-    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, metric_consumer* met) {
-        constexpr double pin_weight_factor = 2;
+    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, std::size_t expected_phases, metric_consumer* met) {
+        double pin_weight_factor = 1.0 / expected_phases;
 
         Plan plan{ width, height, netlist };
         auto has_fanin = [](const IPort &iport) { return iport.has_fanin(); };
@@ -64,6 +64,7 @@ namespace Utils {
                 split_horizontally = !split_horizontally;
             }
             
+            std::vector<std::vector<Plan::coord>> solutions;
             for (const auto &entry : boost::combine(plan.partitions(), plan.bounds())) {
                 const Plan::Partition &partition = boost::get<0>(entry);
                 const Plan::plan_region &region = boost::get<1>(entry);
@@ -131,7 +132,11 @@ namespace Utils {
                     sol[j] = Plan::coord{ b_x(j), b_y(j) };
                 }
 
-                plan.assign_coords(partition, sol);
+                solutions.emplace_back(std::move(sol));
+            }
+
+            for (const auto &entry : boost::combine(plan.partitions(), solutions)) {
+                plan.assign_coords(boost::get<0>(entry), boost::get<1>(entry));
             }
 
             if (met != nullptr) {

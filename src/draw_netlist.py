@@ -84,7 +84,7 @@ if __name__ == "__main__":
     add_edges_for_atoms(network, netlist[IPins], iport_to_atom)
     add_edges_for_atoms(network, netlist[LUTs], iport_to_atom)
 
-    pos = nx.spring_layout(network, k=0.5, iterations=40)
+    pos = nx.spring_layout(network, k=0.5, iterations=1)
     min_x = min(coord[0] for coord in pos.values())
     max_x = max(coord[0] for coord in pos.values())
     min_y = min(coord[1] for coord in pos.values())
