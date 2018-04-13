@@ -47,7 +47,7 @@ namespace Utils {
         }
     }
 
-    Chip quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, metric_consumer* met) {
+    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, metric_consumer* met) {
         constexpr double pin_weight_factor = 2;
 
         Plan plan{ width, height, netlist };
@@ -140,7 +140,7 @@ namespace Utils {
             }
         }
         
-        return Chip{ plan };
+        return plan;
     }
 
 }

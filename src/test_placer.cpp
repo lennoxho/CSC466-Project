@@ -33,9 +33,15 @@ int main() {
     {
         Utils::metric_consumer met{ "qp_iter.out", "qp_ss.out" };
 
-        Chip chip{ Utils::quadratic_placement(width, height, netlist, 2, &met) };
-        Utils::simulated_annealing(chip, 10, 2, 0.5, 0.5, &met);
-        std::cout << chip.get_bbox() << "\n";
+        Plan plan{ Utils::quadratic_placement(width, height, netlist, 2, &met) };
+
+        Chip chip_rand{ plan };
+        Utils::random_placement(chip_rand, 40000);
+        std::cout << chip_rand.get_bbox() << "\n";
+
+        Chip chip_sim{ plan };
+        Utils::simulated_annealing(chip_sim, 10, 2, 0.5, 0.5, &met);
+        std::cout << chip_sim.get_bbox() << "\n";
 
         RUNTIME_ASSERT(met);
     }

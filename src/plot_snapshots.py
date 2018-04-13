@@ -61,7 +61,7 @@ def plot_snapshots(snapshots, width, height, ori_filepath):
         ax.set_xlim([0, width])
         ax.set_ylim([0, height])
 
-        ax.scatter([x for x, _ in ss], [y for _, y in ss])
+        ax.scatter([x for x, _ in ss], [y for _, y in ss], s=2)
 
         plt.grid()
         plt.tight_layout()

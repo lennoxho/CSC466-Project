@@ -46,7 +46,15 @@ public:
         initial_setup();
     }
 
-    Plan(const Plan&) = delete;
+    Plan(Plan &&other)
+        :m_width{ other.m_width },
+        m_height{ other.m_height },
+        m_netlist{ other.m_netlist },
+        m_partitions{ std::move(other.m_partitions) },
+        m_partition_bounds{ std::move(other.m_partition_bounds) },
+        m_board{ std::move(other.m_board) }
+    {}
+
     Plan &operator=(const Plan&) = delete;
 
     const std::size_t get_width() const { return m_width; }
