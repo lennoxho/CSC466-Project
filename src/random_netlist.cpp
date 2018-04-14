@@ -149,8 +149,10 @@ namespace Utils {
                 [](Atom &atom) { return &atom; });
             std::transform(ff_iter, ff_iter + num_ffs_per_phase, std::back_inserter(phase),
                 [](Atom &atom) { return &atom; });
-            phases.emplace_back(std::move(phase));
+            for (Atom* atom : phase) atom->set_phase(i);
 
+            phases.emplace_back(std::move(phase));
+            
             lut_iter += num_luts_per_phase;
             ff_iter += num_ffs_per_phase;
         }
@@ -161,6 +163,8 @@ namespace Utils {
                 [](Atom &atom) { return &atom; });
             std::transform(ff_iter, netlist.end_ffs(), std::back_inserter(phase),
                 [](Atom &atom) { return &atom; });
+            for (Atom* atom : phase) atom->set_phase(num_phases - 1);
+
             phases.emplace_back(std::move(phase));
         }
         
@@ -227,6 +231,11 @@ namespace Utils {
                 boost::property_tree::ptree atom_node;
                 atom_node.add_child("iports", port_nodes(atom.inputs()));
                 atom_node.add_child("oports", port_nodes(atom.outputs()));
+
+                boost::property_tree::ptree phase_node;
+                phase_node.put("", atom.get_phase());
+                atom_node.push_back(std::make_pair("phase", phase_node));
+
                 atoms_arr.add_child(impl::ptr_str(atom), atom_node);
             }
             tree.add_child(name, atoms_arr);

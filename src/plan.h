@@ -32,6 +32,11 @@ public:
         double begin;
         double end;
     };
+
+    enum class partitioning_method {
+        bisection,
+        adaptive
+    };
     
     using plan_region = std::pair<bound, bound>;
 
@@ -123,7 +128,7 @@ public:
     }
 
     void assign_coords(const Partition &partition, const std::vector<coord> &coords);
-    void recursive_partition(bool split_horizontally);
+    void recursive_partition(bool split_horizontally, partitioning_method method);
 
 private:
 

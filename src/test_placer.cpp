@@ -32,9 +32,25 @@ int main() {
     }
 
     {
-        Utils::metric_consumer met{ "qp_iter.out", "qp_ss.out" };
+        Utils::metric_consumer met{ "qp_adaptive_iter.out", "qp_adaptive_ss.out" };
 
-        Plan plan{ Utils::quadratic_placement(width, height, netlist, 2, num_phases, &met) };
+        Plan plan{ Utils::quadratic_placement(width, height, netlist, 2, Plan::partitioning_method::adaptive, num_phases, &met) };
+
+        Chip chip_rand{ plan };
+        Utils::random_placement(chip_rand, 40000);
+        std::cout << chip_rand.get_bbox() << "\n";
+
+        Chip chip_sim{ plan };
+        Utils::simulated_annealing(chip_sim, 10, 2, 0.5, 0.5, &met);
+        std::cout << chip_sim.get_bbox() << "\n";
+
+        RUNTIME_ASSERT(met);
+    }
+
+    {
+        Utils::metric_consumer met{ "qp_bisection_iter.out", "qp_bisection_ss.out" };
+
+        Plan plan{ Utils::quadratic_placement(width, height, netlist, 2, Plan::partitioning_method::bisection, num_phases, &met) };
 
         Chip chip_rand{ plan };
         Utils::random_placement(chip_rand, 40000);

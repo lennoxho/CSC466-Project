@@ -47,7 +47,8 @@ namespace Utils {
         }
     }
 
-    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, std::size_t expected_phases, metric_consumer* met) {
+    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, 
+        Plan::partitioning_method method, std::size_t expected_phases, metric_consumer* met) {
         double pin_weight_factor = 1.0 / expected_phases;
 
         Plan plan{ width, height, netlist };
@@ -60,7 +61,7 @@ namespace Utils {
         bool split_horizontally = true;
         for (int i = 0; i < num_iter; ++i) {
             if (i > 0) {
-                plan.recursive_partition(split_horizontally);
+                plan.recursive_partition(split_horizontally, method);
                 split_horizontally = !split_horizontally;
             }
             
@@ -96,7 +97,7 @@ namespace Utils {
                         }
                         else {
                             auto coord = impl::get_pin_coord(plan, target_atom, region);
-                            if (target_atom.get_type() == Atom::type::IPIN || target_atom.get_type() == Atom::type::OPIN) inv_weight *= pin_weight_factor;
+                            inv_weight *= pin_weight_factor;
                             if (target_atom.get_type() == Atom::type::OPIN) inv_weight *= avg_conn_per_ipin;
 
                             b_x(x) += inv_weight * coord.x;

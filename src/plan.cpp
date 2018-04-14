@@ -16,7 +16,7 @@ void Plan::assign_coords(const Partition &partition, const std::vector<coord> &c
     }
 }
 
-void Plan::recursive_partition(bool split_horizontally) {
+void Plan::recursive_partition(bool split_horizontally, partitioning_method method) {
     auto old_partitions = std::move(m_partitions);
     auto old_bounds = std::move(m_partition_bounds);
     
@@ -43,14 +43,16 @@ void Plan::recursive_partition(bool split_horizontally) {
             std::partial_sort(partition.begin(), mid_iter, partition.end(), sort_by_coord);
 
             if (split_horizontally) {
-                double mid_x = get_coord(**mid_iter).x;
+                double mid_x = (method == partitioning_method::adaptive) ? get_coord(**mid_iter).x :
+                                          region.first.begin + (region.first.end - region.first.begin) / 2;
                 mid_x = std::max(region.first.begin, mid_x);
                 mid_x = std::min(region.first.end, mid_x);
                 m_partition_bounds.emplace_back(bound{ region.first.begin, mid_x }, region.second);
                 m_partition_bounds.emplace_back(bound{ mid_x, region.first.end }, region.second);
             }
             else {
-                double mid_y = get_coord(**mid_iter).y;
+                double mid_y = (method == partitioning_method::adaptive) ? get_coord(**mid_iter).y :
+                                          region.second.begin + (region.second.end - region.second.begin) / 2;
                 mid_y = std::max(region.second.begin, mid_y);
                 mid_y = std::min(region.second.end, mid_y);
                 m_partition_bounds.emplace_back(region.first, bound{ region.second.begin, mid_y });

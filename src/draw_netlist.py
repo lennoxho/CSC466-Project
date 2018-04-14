@@ -39,10 +39,11 @@ def get_iport_to_atom_relation(netlist):
 
     return relation
 
-def add_edges_for_atoms(network, atoms, iport_to_atom):
+def add_edges_and_attr_for_atoms(network, atoms, iport_to_atom):
     for atom_name in atoms.keys():
         atom = atoms[atom_name]
-        oports = atom['oports']
+        oports = atom["oports"]
+        nx.set_node_attributes(network, "phase", atom["phase"])
 
         if oports != u'':
             for oport in oports.keys():
@@ -79,10 +80,10 @@ if __name__ == "__main__":
     network.add_nodes_from(netlist[IPins].keys(), atom_type="IPin")
     network.add_nodes_from(netlist[LUTs].keys(), atom_type="LUT")
 
-    add_edges_for_atoms(network, netlist[FFs], iport_to_atom)
-    add_edges_for_atoms(network, netlist[OPins], iport_to_atom)
-    add_edges_for_atoms(network, netlist[IPins], iport_to_atom)
-    add_edges_for_atoms(network, netlist[LUTs], iport_to_atom)
+    add_edges_and_attr_for_atoms(network, netlist[FFs], iport_to_atom)
+    add_edges_and_attr_for_atoms(network, netlist[OPins], iport_to_atom)
+    add_edges_and_attr_for_atoms(network, netlist[IPins], iport_to_atom)
+    add_edges_and_attr_for_atoms(network, netlist[LUTs], iport_to_atom)
 
     pos = nx.spring_layout(network, k=0.5, iterations=1)
     min_x = min(coord[0] for coord in pos.values())

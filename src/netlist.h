@@ -126,25 +126,29 @@ public:
     Atom(std::size_t max_inputs, std::size_t max_outputs, std::size_t max_fanouts, type t)
         :m_inputs( max_inputs, IPort{ *this } ),
         m_outputs( max_outputs, OPort{ *this, max_fanouts } ),
-        m_type{ t }
+        m_type{ t },
+        m_phase{ std::numeric_limits<std::size_t>::max() }
     {}
 
     Atom(const Atom &other)
         :m_inputs{ other.m_inputs },
         m_outputs{ other.m_outputs },
-        m_type{ other.m_type }
+        m_type{ other.m_type },
+        m_phase{ other.m_phase }
     {}
 
     Atom(Atom &&other)
         :m_inputs{ std::move(other.m_inputs) },
         m_outputs{ std::move(other.m_outputs) },
-        m_type{ other.m_type }
+        m_type{ other.m_type },
+        m_phase{ other.m_phase }
     {}
 
     Atom &operator=(const Atom &other) {
         m_inputs = other.m_inputs;
         m_outputs = other.m_outputs;
         m_type = other.m_type;
+        m_phase = other.m_phase;
         return *this;
     }
 
@@ -152,10 +156,10 @@ public:
         m_inputs = std::move(other.m_inputs);
         m_outputs = std::move(other.m_outputs);
         m_type = other.m_type;
+        m_phase = other.m_phase;
         return *this;
     }
 
-    // HACK - bad design decisions lead to this :(.
     void init_back_pointer() {
         for (IPort &iport : m_inputs) {
             iport.m_atom = this;
@@ -214,13 +218,17 @@ public:
     inline bool inputs_full() const { return num_unconnected_input() == 0; }
     inline bool outputs_full() const { return num_unconnected_output() == 0; }
     
-    type get_type() const { return m_type; }
+    inline type get_type() const { return m_type; }
+    
+    inline std::size_t get_phase() const { return m_phase; }
+    inline void set_phase(std::size_t num) { m_phase = num; }
 
 protected:
 
     std::vector<IPort> m_inputs;
     std::vector<OPort> m_outputs;
     type m_type;
+    std::size_t m_phase;
 
 };
 
