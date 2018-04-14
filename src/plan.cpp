@@ -8,7 +8,7 @@ void Plan::assign_coords(const Partition &partition, const std::vector<coord> &c
     coord c;
     for (const auto &entry : boost::combine(partition, coords)) {
         boost::tie(atom, c) = entry;
-        
+
         auto iter = m_board.find(atom);
         RUNTIME_ASSERT(iter != m_board.end());
 
@@ -19,7 +19,7 @@ void Plan::assign_coords(const Partition &partition, const std::vector<coord> &c
 void Plan::recursive_partition(bool split_horizontally, partitioning_method method) {
     auto old_partitions = std::move(m_partitions);
     auto old_bounds = std::move(m_partition_bounds);
-    
+
     m_partitions.reserve(old_partitions.size() * 2);
     m_partition_bounds.reserve(old_bounds.size() * 2);
 
@@ -33,7 +33,7 @@ void Plan::recursive_partition(bool split_horizontally, partitioning_method meth
     for (auto entry : boost::combine(old_partitions, old_bounds)) {
         Partition &partition = boost::get<0>(entry);
         const plan_region &region = boost::get<1>(entry);
-        
+
         if (partition.size() == 0) {
             m_partition_bounds.emplace_back(region);
             m_partitions.emplace_back(std::move(partition));
@@ -58,7 +58,7 @@ void Plan::recursive_partition(bool split_horizontally, partitioning_method meth
                 m_partition_bounds.emplace_back(region.first, bound{ region.second.begin, mid_y });
                 m_partition_bounds.emplace_back(region.first, bound{ mid_y, region.second.end });
             }
-            
+
             m_partitions.emplace_back(mid_iter, partition.end());
             partition.erase(mid_iter, partition.end());
             m_partitions.emplace_back(std::move(partition));
@@ -77,9 +77,9 @@ void Plan::initial_setup() {
     auto insert_initial_coord = [&](const Atom &atom) {
         m_board.emplace(&atom, coord{ 0.0, 0.0 });
     };
-    
+
     m_partitions.emplace_back(std::move(initial_partiton));
-    m_partition_bounds.emplace_back(bound{ 0.0, static_cast<double>(m_height) }, 
+    m_partition_bounds.emplace_back(bound{ 0.0, static_cast<double>(m_height) },
                                     bound{ 0.0, static_cast<double>(m_width) });
 
     std::for_each(m_netlist.begin_luts(), m_netlist.end_luts(), insert_initial_coord);

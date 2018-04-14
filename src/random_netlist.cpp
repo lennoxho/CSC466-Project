@@ -12,7 +12,7 @@ namespace Utils {
 
     namespace impl {
 
-        void random_front_phase(Netlist &netlist, const std::vector<Atom*> &phase, std::mt19937 &eng, 
+        void random_front_phase(Netlist &netlist, const std::vector<Atom*> &phase, std::mt19937 &eng,
             std::size_t num_outputs, std::size_t num_ipins, double connect_prob) {
             std::size_t atom_skew = phase.size() / 15;
 
@@ -43,8 +43,8 @@ namespace Utils {
             }
         }
 
-        void random_back_phase(Netlist &netlist, const std::vector<Atom*> &phase, std::mt19937 &eng, 
-            std::size_t num_outputs, std::size_t num_ipins, double connect_prob, bool skip_atom) 
+        void random_back_phase(Netlist &netlist, const std::vector<Atom*> &phase, std::mt19937 &eng,
+            std::size_t num_outputs, std::size_t num_ipins, double connect_prob, bool skip_atom)
         {
             std::uniform_real_distribution<> connect_dist{ 0.0, 1.0 };
             std::uniform_int_distribution<std::size_t> atom_dist{ 0, phase.size() - 1 };
@@ -74,7 +74,7 @@ namespace Utils {
         }
 
         void random_phase(const std::vector<Atom*> &phase, std::mt19937 &eng,
-            std::size_t num_outputs, std::size_t num_ipins, double connect_prob) 
+            std::size_t num_outputs, std::size_t num_ipins, double connect_prob)
         {
             std::uniform_real_distribution<> connect_dist{ 0.0, 1.0 };
             std::uniform_int_distribution<std::size_t> atom_dist{ 0, phase.size() - 1 };
@@ -133,7 +133,7 @@ namespace Utils {
 
         constexpr double connect_prob = 0.25;
         constexpr std::size_t max_outputs = 10000;
-        
+
         std::size_t num_luts_per_phase = num_luts / num_phases;
         std::size_t num_ffs_per_phase = num_ffs / num_phases;
         Netlist netlist{ num_ipins, num_opins, num_luts, num_ffs, num_inputs, num_outputs, max_outputs };
@@ -152,7 +152,7 @@ namespace Utils {
             for (Atom* atom : phase) atom->set_phase(i);
 
             phases.emplace_back(std::move(phase));
-            
+
             lut_iter += num_luts_per_phase;
             ff_iter += num_ffs_per_phase;
         }
@@ -167,9 +167,9 @@ namespace Utils {
 
             phases.emplace_back(std::move(phase));
         }
-        
+
         std::mt19937 eng;
-        
+
         if (phases.size() > 1) {
             impl::connect_phases(phases, num_phases * (num_phases - 1) / 2 * 10, eng, num_inputs, num_outputs);
         }

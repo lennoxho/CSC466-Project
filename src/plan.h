@@ -27,7 +27,7 @@ public:
         double x;
         double y;
     };
-    
+
     struct bound {
         double begin;
         double end;
@@ -37,7 +37,7 @@ public:
         bisection,
         adaptive
     };
-    
+
     using plan_region = std::pair<bound, bound>;
 
     Plan(std::size_t width, std::size_t height, const Netlist &netlist)
@@ -74,7 +74,7 @@ public:
     inline auto begin_partitions() const { return m_partitions.begin(); }
     inline auto end_partitions() { return m_partitions.end(); }
     inline auto end_partitions() const { return m_partitions.end(); }
-    
+
     inline auto &bounds() { return m_partition_bounds; }
     inline auto &bounds() const { return m_partition_bounds; }
 
@@ -114,14 +114,14 @@ public:
     }
 
     inline boost::optional<coord> get_coord(const IPin &ipin) const {
-        auto iter = std::find_if(ipins().begin(), ipins().end(), 
+        auto iter = std::find_if(ipins().begin(), ipins().end(),
             [&](const IPin &i) { return &i == &ipin; });
         if (iter == ipins().end()) return boost::none;
         return coord{ -1.0, static_cast<double>((iter - ipins().begin()) * (m_height / m_netlist.num_ipins())) };
     }
 
     inline boost::optional<coord> get_coord(const OPin &opin) const {
-        auto iter = std::find_if(opins().begin(), opins().end(), 
+        auto iter = std::find_if(opins().begin(), opins().end(),
             [&](const OPin &o) { return &o == &opin; });
         if (iter == opins().end()) return boost::none;
         return coord{ static_cast<double>(m_width), static_cast<double>((iter - opins().begin()) * (m_height / m_netlist.num_opins())) };

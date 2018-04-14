@@ -28,7 +28,7 @@ namespace Utils {
             else if (nearest_coord.x > region.first.end) {
                 nearest_coord.x = region.first.end;
             }
-            
+
             if (nearest_coord.y < region.second.begin) {
                 nearest_coord.y = region.second.begin;
             }
@@ -47,7 +47,7 @@ namespace Utils {
         }
     }
 
-    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, 
+    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter,
         Plan::partitioning_method method, std::size_t expected_phases, metric_consumer* met) {
         double pin_weight_factor = 1.0 / expected_phases;
 
@@ -64,19 +64,19 @@ namespace Utils {
                 plan.recursive_partition(split_horizontally, method);
                 split_horizontally = !split_horizontally;
             }
-            
+
             std::vector<std::vector<Plan::coord>> solutions;
             for (const auto &entry : boost::combine(plan.partitions(), plan.bounds())) {
                 const Plan::Partition &partition = boost::get<0>(entry);
                 const Plan::plan_region &region = boost::get<1>(entry);
                 if (partition.size() == 0) continue;
-                
+
                 std::unordered_map<const Atom*, std::size_t> atom_to_index;
                 std::size_t i = 0;
                 for (const Atom* atom : partition) {
                     atom_to_index[atom] = i++;
                 }
-                
+
                 Eigen::MatrixXd A = Eigen::MatrixXd::Zero(partition.size(), partition.size());
 
                 Eigen::VectorXd b_x = Eigen::VectorXd::Zero(partition.size());
@@ -104,7 +104,7 @@ namespace Utils {
                             b_y(x) += inv_weight * coord.y;
                         }
                     };
-                    
+
                     for (const IPort &iport : atom->inputs() | boost::adaptors::filtered(has_fanin)) {
                         const OPort* target_oport = iport.fanin();
                         double inv_weight = 1.0 / target_oport->size();
@@ -145,7 +145,7 @@ namespace Utils {
                 dump_plan(plan, met->snapshot());
             }
         }
-        
+
         return plan;
     }
 

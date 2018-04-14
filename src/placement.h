@@ -40,7 +40,7 @@ namespace Utils {
     void simulated_annealing(Chip &chip, std::int64_t num_iter, std::size_t num_swap_per_atom, double hot, double cooling_factor, metric_consumer* met = nullptr);
 
     void dump_plan(const Plan &plan, std::ostream &os);
-    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter, 
+    Plan quadratic_placement(std::size_t width, std::size_t height, const Netlist &netlist, int num_iter,
         Plan::partitioning_method method, std::size_t expected_phases, metric_consumer* met = nullptr);
 
 }

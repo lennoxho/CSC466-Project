@@ -26,7 +26,7 @@ public:
         m_bbox = initial_bbox();
     }
 
-    Chip(const Plan &plan) 
+    Chip(const Plan &plan)
         :m_width{ plan.get_width() },
         m_height{ plan.get_height() },
         m_netlist{ plan.get_netlist() }
@@ -42,7 +42,7 @@ public:
         m_netlist{ other.m_netlist },
         m_board{ std::move(other.m_board) }
     {}
-    
+
     Chip operator=(const Chip&) = delete;
 
     const std::size_t get_width() const { return m_width; }

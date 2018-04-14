@@ -115,7 +115,7 @@ std::int64_t Chip::bbox_for_atom(const Atom &atom) const {
 
 void Chip::legalize_plan(const Plan &plan) {
     for (const auto &entry : plan.board()) {
-        coord new_coord{ static_cast<std::int64_t>(entry.second.x), 
+        coord new_coord{ static_cast<std::int64_t>(entry.second.x),
                          static_cast<std::int64_t>(entry.second.y) };
         new_coord.x = std::max(std::int64_t(0), new_coord.x);
         new_coord.x = std::min(static_cast<std::int64_t>(m_height)-2, new_coord.x);
@@ -123,19 +123,19 @@ void Chip::legalize_plan(const Plan &plan) {
         new_coord.y = std::min(static_cast<std::int64_t>(m_width)-2, new_coord.y);
         std::size_t ori_idx = coord_to_idx(new_coord);
         std::size_t idx = ori_idx;
-        
+
         if ((entry.first->get_type() == Atom::type::LUT && idx % 2 == 1) ||
             (entry.first->get_type() == Atom::type::FF && idx % 2 == 0))
         {
             ++idx;
         }
-        
+
         std::size_t max_idx = m_width * m_height;
 
         std::int64_t curr_idx = static_cast<std::int64_t>(idx);
         auto iter = m_board.left.find(static_cast<std::size_t>(curr_idx));
 
-        while (iter != m_board.left.end() && curr_idx - 2 > 0) {    
+        while (iter != m_board.left.end() && curr_idx - 2 > 0) {
             curr_idx -= 2;
             iter = m_board.left.find(static_cast<std::size_t>(curr_idx));
         }

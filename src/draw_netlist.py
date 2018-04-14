@@ -43,7 +43,7 @@ def add_edges_and_attr_for_atoms(network, atoms, iport_to_atom):
     for atom_name in atoms.keys():
         atom = atoms[atom_name]
         oports = atom["oports"]
-        nx.set_node_attributes(network, "phase", atom["phase"])
+        nx.set_node_attributes(network, "phase", {atom_name : atom["phase"]})
 
         if oports != u'':
             for oport in oports.keys():
@@ -90,6 +90,21 @@ if __name__ == "__main__":
     max_x = max(coord[0] for coord in pos.values())
     min_y = min(coord[1] for coord in pos.values())
     max_y = max(coord[1] for coord in pos.values())
+
+    x_diff = max_x - min_x
+    pad = 0.1 * x_diff
+    max_phase = 0
+    for atom in network.nodes(data=True):
+        if atom[1]["atom_type"] != "FF" and atom[1]["atom_type"] != "LUT":
+            continue
+
+        phase_num = int(atom[1]["phase"])
+        max_phase = max(phase_num, max_phase)
+
+        node = atom[0]
+        pos[node] = (pos[node][0] + phase_num*(pad + x_diff), pos[node][1])
+
+    max_x += max_phase * x_diff
 
     IPins = [x[0] for x in network.nodes(data=True) if x[1]["atom_type"] == "IPin"]
     IPin_pos = get_fixed_pos(IPins, min_x - 0.1*(max_x - min_x), min_y, max_y)

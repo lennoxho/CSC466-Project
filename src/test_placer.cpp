@@ -3,7 +3,7 @@
 #include <iostream>
 
 int main() {
-    std::size_t num_phases = 2;
+    std::size_t num_phases = 3;
     Netlist netlist = Utils::random_netlist(10, 5, 1000, 1000, 3, 3, num_phases);
     Utils::dump_netlist(netlist, "netlist.out");
 
@@ -12,12 +12,12 @@ int main() {
 
     {
         Utils::metric_consumer met{ "random_iter.out", "random_ss.out" };
-    
+
         Chip chip{ width, height, netlist };
         std::cout << chip.get_bbox() << "\n";
         Utils::random_placement(chip, 40000, &met);
         std::cout << chip.get_bbox() << "\n";
-    
+
         RUNTIME_ASSERT(met);
     }
 

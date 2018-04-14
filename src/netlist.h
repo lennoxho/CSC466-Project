@@ -217,9 +217,9 @@ public:
 
     inline bool inputs_full() const { return num_unconnected_input() == 0; }
     inline bool outputs_full() const { return num_unconnected_output() == 0; }
-    
+
     inline type get_type() const { return m_type; }
-    
+
     inline std::size_t get_phase() const { return m_phase; }
     inline void set_phase(std::size_t num) { m_phase = num; }
 
