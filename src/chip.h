@@ -44,6 +44,7 @@ public:
     {}
 
     Chip operator=(const Chip&) = delete;
+    inline Chip clone() const { return Chip(*this); }
 
     const std::size_t get_width() const { return m_width; }
     const std::size_t get_height() const { return m_height; }
@@ -95,6 +96,14 @@ public:
     std::size_t swap(const Atom &lhs_atom, std::size_t idx);
 
 private:
+
+    Chip(const Chip &other)
+        :m_bbox{ other.m_bbox },
+        m_width{ other.m_width },
+        m_height{ other.m_height },
+        m_netlist{ other.m_netlist },
+        m_board{ other.m_board }
+    {}
 
     void initial_random_placement();
     std::int64_t initial_bbox();

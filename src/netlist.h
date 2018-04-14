@@ -389,6 +389,12 @@ private:
 
 };
 
+inline std::ostream &operator<<(std::ostream &os, const Netlist &netlist) {
+    os << netlist.num_luts() + netlist.num_ffs() << " atoms (" << netlist.num_luts() << " LUTs, " << netlist.num_ffs()
+        << " FFs), " << netlist.num_ipins() << " IPINs, " << netlist.num_opins() << " OPINs";
+    return os;
+}
+
 namespace Utils {
 
     struct Access {

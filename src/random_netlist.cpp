@@ -114,7 +114,9 @@ namespace Utils {
                 Atom &rhs_atom = *(phases[indices[1]][rhs_idx]);
                 OPort &rhs_oport = rhs_atom.get_oport(oport_dist(eng));
 
-                connect(lhs_iport, rhs_oport);
+                if (!lhs_iport.has_fanin()) {
+                    connect(lhs_iport, rhs_oport);
+                }
             }
         }
 

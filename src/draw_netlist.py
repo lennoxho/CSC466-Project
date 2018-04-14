@@ -4,6 +4,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import sys
 
+SAVE_PLOTS = True
 FFs = "FFs"
 OPins = "OPins"
 IPins = "IPins"
@@ -121,4 +122,6 @@ if __name__ == "__main__":
     nx.draw_networkx_nodes(network, IPin_pos, node_color="blue", nodelist=IPins, node_shape=">", node_size = 50)
     nx.draw_networkx_nodes(network, pos, node_color="red", nodelist=[x[0] for x in network.nodes(data=True) if x[1]["atom_type"] == "LUT"], node_shape="s", node_size = 50)
     nx.draw_networkx_edges(network, pos, arrows=False)
+    if SAVE_PLOTS:
+        plt.savefig(json_filepath + ".png")
     plt.show()
