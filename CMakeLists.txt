@@ -5,7 +5,7 @@ set(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}")
 if (NOT EIGEN3_INCLUDE_DIR)
     message(FATAL_ERROR "EIGEN3_INCLUDE_DIR not set!")
 endif()
-include_directories("${EIGEN3_INCLUDE_DIR}")
+include_directories(SYSTEM "${EIGEN3_INCLUDE_DIR}")
 
 find_package(Boost REQUIRED)
 include_directories("${Boost_INCLUDE_DIRS}")
