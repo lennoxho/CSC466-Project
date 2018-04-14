@@ -141,7 +141,7 @@ void Chip::legalize_plan(const Plan &plan) {
         }
 
         if (iter != m_board.left.end()) curr_idx = static_cast<std::int64_t>(idx);
-        while (iter != m_board.left.end() && curr_idx + 2 < max_idx) {
+        while (iter != m_board.left.end() && curr_idx + 2 < static_cast<std::int64_t>(max_idx)) {
             curr_idx += 2;
             iter = m_board.left.find(static_cast<std::size_t>(curr_idx));
         }
