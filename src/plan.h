@@ -1,3 +1,6 @@
+// (C) Copyright Shou Hao Ho   2018
+// Distributed under the MIT Software License (See accompanying LICENSE file)
+
 #pragma once
 
 #include <boost/bimap.hpp>

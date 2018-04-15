@@ -1,3 +1,6 @@
+// (C) Copyright Shou Hao Ho   2018
+// Distributed under the MIT Software License (See accompanying LICENSE file)
+
 #include <Eigen/Dense>
 #include <boost/range/combine.hpp>
 #include <boost/range/adaptors.hpp>
