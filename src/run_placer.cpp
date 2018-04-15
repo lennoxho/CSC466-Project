@@ -192,11 +192,11 @@ void run_num_phases_experiments() {
 void run_num_atoms_experiments() {
     constexpr std::size_t iter_begin = 100;
     constexpr std::size_t iter_end = 1'000;
-    constexpr std::size_t iter_factor = 10;
+    constexpr std::size_t iter_incr = 100;
     constexpr std::size_t num_iterations = 10'000;
     constexpr std::size_t num_phases = 3;
 
-    for (std::size_t i = iter_begin; i <= iter_end; i*=iter_factor) {
+    for (std::size_t i = iter_begin; i <= iter_end; i+=iter_incr) {
         Netlist netlist = Utils::random_netlist(10, 5, i, i, 3, 3, num_phases);
         Chip chip{ 150, 150, netlist };
 
