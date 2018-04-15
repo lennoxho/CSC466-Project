@@ -65,15 +65,15 @@ def plot_snapshots(snapshots, width, height, ori_filepath):
 
         X = [x for x, _ in ss]
         Y = [y for _, y in ss]
-        
+
         if "qp" in ori_filepath:
             XY = np.vstack([X, Y])
             Z = gaussian_kde(XY)(XY)
-            
+
             ax.scatter(X, Y, c=Z, s=10, edgecolor='')
         else:
             ax.scatter(X, Y, s=5)
-            
+
         plt.grid()
         plt.tight_layout()
         if SAVE_PLOTS:

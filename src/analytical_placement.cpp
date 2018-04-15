@@ -2,8 +2,9 @@
 #include <boost/range/combine.hpp>
 #include <boost/range/adaptors.hpp>
 #include <numeric>
-#include "plan.h"
+
 #include "placement.h"
+#include "plan.h"
 
 namespace Utils {
 

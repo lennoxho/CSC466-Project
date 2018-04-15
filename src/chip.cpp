@@ -1,5 +1,4 @@
 #include <numeric>
-#include <iostream>
 #include "chip.h"
 
 std::size_t Chip::swap(const Atom &lhs_atom, std::size_t idx) {
@@ -139,7 +138,7 @@ void Chip::legalize_plan(const Plan &plan) {
             curr_idx += 2;
             iter = m_board.left.find(static_cast<std::size_t>(curr_idx));
         }
-        
+
         if (iter != m_board.left.end()) curr_idx = static_cast<std::int64_t>(idx);
         while (iter != m_board.left.end() && curr_idx - 2 > 0) {
             curr_idx -= 2;

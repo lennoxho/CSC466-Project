@@ -1,6 +1,7 @@
+#include <iostream>
+
 #include "chip.h"
 #include "placement.h"
-#include <iostream>
 
 void run_demos() {
     constexpr std::size_t num_atoms = 1000;

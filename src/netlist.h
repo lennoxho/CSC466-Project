@@ -1,8 +1,8 @@
 #pragma once
 
+#include <boost/range.hpp>
 #include <exception>
 #include <vector>
-#include <boost/range.hpp>
 
 #define RUNTIME_ASSERT(COND) if (!(COND)) { throw std::runtime_error{ #COND }; }
 

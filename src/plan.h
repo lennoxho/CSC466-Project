@@ -1,8 +1,9 @@
 #pragma once
 
-#include <boost/optional.hpp>
 #include <boost/bimap.hpp>
+#include <boost/optional.hpp>
 #include <unordered_map>
+
 #include "netlist.h"
 
 class Plan {
