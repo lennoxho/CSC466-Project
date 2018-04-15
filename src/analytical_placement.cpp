@@ -58,11 +58,11 @@ namespace Utils {
             [](std::int64_t prev, const IPin &ipin) { return prev + ipin.get_oport().size(); });
         avg_conn_per_ipin /= netlist.num_ipins();
 
-        bool split_horizontally = true;
+        bool split_vertically = true;
         for (int i = 0; i < num_iter; ++i) {
             if (i > 0) {
-                plan.recursive_partition(split_horizontally, method);
-                split_horizontally = !split_horizontally;
+                plan.recursive_partition(split_vertically, method);
+                split_vertically = !split_vertically;
             }
 
             std::vector<std::vector<Plan::coord>> solutions;
@@ -136,8 +136,8 @@ namespace Utils {
                 solutions.emplace_back(std::move(sol));
             }
 
-            for (const auto &entry : boost::combine(plan.partitions(), solutions)) {
-                plan.assign_coords(boost::get<0>(entry), boost::get<1>(entry));
+            for (std::size_t i = 0; i < solutions.size(); ++i) {
+                plan.assign_coords(plan.partitions()[i], solutions[i], plan.bounds()[i]);
             }
 
             if (met != nullptr) {

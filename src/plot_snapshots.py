@@ -1,5 +1,7 @@
 from __future__ import print_function
 import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import gaussian_kde
 import sys
 import re
 
@@ -58,11 +60,20 @@ def plot_snapshots(snapshots, width, height, ori_filepath):
         fig = plt.figure(figsize=(8, 8))
 
         ax = plt.gca()
-        ax.set_xlim([0, width])
-        ax.set_ylim([0, height])
+        ax.set_xlim([-1, width+1])
+        ax.set_ylim([-1, height+1])
 
-        ax.scatter([x for x, _ in ss], [y for _, y in ss], s=2)
-
+        X = [x for x, _ in ss]
+        Y = [y for _, y in ss]
+        
+        if "qp" in ori_filepath:
+            XY = np.vstack([X, Y])
+            Z = gaussian_kde(XY)(XY)
+            
+            ax.scatter(X, Y, c=Z, s=10, edgecolor='')
+        else:
+            ax.scatter(X, Y, s=5)
+            
         plt.grid()
         plt.tight_layout()
         if SAVE_PLOTS:

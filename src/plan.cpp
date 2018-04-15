@@ -1,7 +1,7 @@
 #include <boost/range/combine.hpp>
 #include "plan.h"
 
-void Plan::assign_coords(const Partition &partition, const std::vector<coord> &coords) {
+void Plan::assign_coords(const Partition &partition, const std::vector<coord> &coords, const plan_region &bound) {
     RUNTIME_ASSERT(partition.size() == coords.size());
 
     const Atom* atom;
@@ -12,11 +12,15 @@ void Plan::assign_coords(const Partition &partition, const std::vector<coord> &c
         auto iter = m_board.find(atom);
         RUNTIME_ASSERT(iter != m_board.end());
 
+        c.x = std::min(bound.first.end, c.x);
+        c.x = std::max(bound.first.begin, c.x);
+        c.y = std::min(bound.second.end, c.y);
+        c.y = std::max(bound.second.begin, c.y);
         iter->second = c;
     }
 }
 
-void Plan::recursive_partition(bool split_horizontally, partitioning_method method) {
+void Plan::recursive_partition(bool split_vertically, partitioning_method method) {
     auto old_partitions = std::move(m_partitions);
     auto old_bounds = std::move(m_partition_bounds);
 
@@ -26,7 +30,7 @@ void Plan::recursive_partition(bool split_horizontally, partitioning_method meth
     auto sort_by_coord = [&](const Atom* lhs, const Atom* rhs) {
         const coord &lhs_c = m_board.at(lhs);
         const coord &rhs_c = m_board.at(rhs);
-        return split_horizontally ? coord::x_major_lt(lhs_c, rhs_c) :
+        return split_vertically ? coord::x_major_lt(lhs_c, rhs_c) :
                                     coord::y_major_lt(lhs_c, rhs_c);
     };
 
@@ -42,7 +46,7 @@ void Plan::recursive_partition(bool split_horizontally, partitioning_method meth
             auto mid_iter = partition.begin() + partition.size() / 2;
             std::partial_sort(partition.begin(), mid_iter, partition.end(), sort_by_coord);
 
-            if (split_horizontally) {
+            if (split_vertically) {
                 double mid_x = (method == partitioning_method::adaptive) ? get_coord(**mid_iter).x :
                                           region.first.begin + (region.first.end - region.first.begin) / 2;
                 mid_x = std::max(region.first.begin, mid_x);

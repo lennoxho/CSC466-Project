@@ -127,7 +127,7 @@ public:
         return coord{ static_cast<double>(m_width), static_cast<double>((iter - opins().begin()) * (m_height / m_netlist.num_opins())) };
     }
 
-    void assign_coords(const Partition &partition, const std::vector<coord> &coords);
+    void assign_coords(const Partition &partition, const std::vector<coord> &coords, const plan_region &bound);
     void recursive_partition(bool split_horizontally, partitioning_method method);
 
 private:

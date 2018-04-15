@@ -28,7 +28,7 @@ void run_demos() {
     {
         Utils::metric_consumer met{ "qp_adaptive_iter.out", "qp_adaptive_ss.out" };
 
-        Plan plan{ Utils::quadratic_placement(chip.get_width(), chip.get_height(), chip.get_netlist(), 4,
+        Plan plan{ Utils::quadratic_placement(chip.get_width(), chip.get_height(), chip.get_netlist(), 3,
             Plan::partitioning_method::adaptive, 1, &met) };
         Chip qp_chip{ plan };
 
@@ -41,7 +41,7 @@ void run_demos() {
     {
         Utils::metric_consumer met{ "qp_bisection_iter.out", "qp_bisection_ss.out" };
 
-        Plan plan{ Utils::quadratic_placement(chip.get_width(), chip.get_height(), chip.get_netlist(), 4,
+        Plan plan{ Utils::quadratic_placement(chip.get_width(), chip.get_height(), chip.get_netlist(), 3,
             Plan::partitioning_method::bisection, 1, &met) };
         Chip qp_chip{ plan };
 
@@ -57,14 +57,14 @@ void run_demos() {
     {
         Utils::metric_consumer met{ "qp_adaptive_3_phases_iter.out", "qp_adaptive_3_phases_ss.out" };
 
-        Plan plan{ Utils::quadratic_placement(100, 100, netlist_3_phases, 4,
+        Plan plan{ Utils::quadratic_placement(100, 100, netlist_3_phases, 3,
             Plan::partitioning_method::adaptive, 3, &met) };
     }
 
     {
         Utils::metric_consumer met{ "qp_bisection_3_phases_iter.out", "qp_bisection_3_phases_ss.out" };
 
-        Plan plan{ Utils::quadratic_placement(100, 100, netlist_3_phases, 4,
+        Plan plan{ Utils::quadratic_placement(100, 100, netlist_3_phases, 3,
             Plan::partitioning_method::bisection, 3, &met) };
     }
 }
