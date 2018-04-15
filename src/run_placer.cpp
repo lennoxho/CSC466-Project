@@ -4,7 +4,7 @@
 
 void run_demos() {
     constexpr std::size_t num_atoms = 1000;
-    constexpr std::size_t num_iterations = 10'000;
+    constexpr std::size_t num_iterations = 100'000;
 
     Netlist netlist = Utils::random_netlist(10, 5, num_atoms, num_atoms, 3, 3, 1);
     Utils::dump_netlist(netlist, "10_5_1000_1000_3_3_1_netlist.out");

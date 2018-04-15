@@ -2,6 +2,8 @@ from __future__ import print_function
 import matplotlib.pyplot as plt
 import sys
 
+SAVE_PLOTS = True
+
 def get_points(filepath):
     try:
         hfile = open(filepath)
