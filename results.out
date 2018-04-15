@@ -1,0 +1,144 @@
+Running demo...
+
+Performing number of iterations experiment on iterative placement methods:
+----------------------------------------------------------------------------
+2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs Netlist, (100, 100) Chip.
+Random placement with 100 iterations. BBOX = 50093
+Random placement with 1000 iterations. BBOX = 47260
+Random placement with 10000 iterations. BBOX = 34095
+Random placement with 100000 iterations. BBOX = 18442
+Simulated annealing with 100 iterations. BBOX = 50093
+Simulated annealing with 1000 iterations. BBOX = 46943
+Simulated annealing with 10000 iterations. BBOX = 34277
+Simulated annealing with 100000 iterations. BBOX = 18717
+
+Performing number of recursions experiment on quadratic placement method:
+----------------------------------------------------------------------------
+2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs Netlist, (100, 100) Chip.
+Quadratic placement + adaptive partitioning with 1 recursions. BBOX = 39835
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 1 recursions. BBOX = 26991
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 1 recursions. BBOX = 27340
+Quadratic placement + adaptive partitioning with 2 recursions. BBOX = 42373
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 2 recursions. BBOX = 27686
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 2 recursions. BBOX = 28460
+Quadratic placement + adaptive partitioning with 3 recursions. BBOX = 45987
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 3 recursions. BBOX = 30511
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 3 recursions. BBOX = 31594
+Quadratic placement + adaptive partitioning with 4 recursions. BBOX = 46370
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 4 recursions. BBOX = 32105
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 4 recursions. BBOX = 31743
+Quadratic placement + bisection partitioning with 1 recursions. BBOX = 39835
+Quadratic placement + bisection partitioning + 100000 iterations random placement with 1 recursions. BBOX = 26991
+Quadratic placement + bisection partitioning + 100000 iterations simulated annealing with 1 recursions. BBOX = 27340
+Quadratic placement + bisection partitioning with 2 recursions. BBOX = 45473
+Quadratic placement + bisection partitioning + 100000 iterations random placement with 2 recursions. BBOX = 30701
+Quadratic placement + bisection partitioning + 100000 iterations simulated annealing with 2 recursions. BBOX = 30669
+Quadratic placement + bisection partitioning with 3 recursions. BBOX = 46983
+Quadratic placement + bisection partitioning + 100000 iterations random placement with 3 recursions. BBOX = 32376
+Quadratic placement + bisection partitioning + 100000 iterations simulated annealing with 3 recursions. BBOX = 32911
+Quadratic placement + bisection partitioning with 4 recursions. BBOX = 52155
+Quadratic placement + bisection partitioning + 100000 iterations random placement with 4 recursions. BBOX = 34461
+Quadratic placement + bisection partitioning + 100000 iterations simulated annealing with 4 recursions. BBOX = 33350
+
+Performing number of atoms experiment:
+----------------------------------------------------------------------------
+Random placement with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 3595
+Simulated annealing with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 3441
+Quadratic placement + adaptive partitioning with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 5954
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 2937
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 3149
+Quadratic placement + bisection partitioning with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 5704
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 2468
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 200 atoms (100 LUTs, 100 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 2623
+Random placement with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 50337
+Simulated annealing with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 50637
+Quadratic placement + adaptive partitioning with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 56131
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 36789
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 36624
+Quadratic placement + bisection partitioning with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 58316
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 37702
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 2000 atoms (1000 LUTs, 1000 FFs), 10 IPINs, 5 OPINs netlist. BBOX = 38523
+
+Performing number of phases experiment:
+----------------------------------------------------------------------------
+Random placement with 1 phases. BBOX = 36494
+Simulated annealing with 1 phases. BBOX = 35680
+Quadratic placement + adaptive partitioning with 1 phases. BBOX = 28205
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 1 phases. BBOX = 21092
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 1 phases. BBOX = 21553
+Quadratic placement + bisection partitioning with 1 phases. BBOX = 31808
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 1 phases. BBOX = 23891
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 1 phases. BBOX = 24176
+Random placement with 2 phases. BBOX = 35428
+Simulated annealing with 2 phases. BBOX = 35411
+Quadratic placement + adaptive partitioning with 2 phases. BBOX = 36896
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 2 phases. BBOX = 26275
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 2 phases. BBOX = 25683
+Quadratic placement + bisection partitioning with 2 phases. BBOX = 34491
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 2 phases. BBOX = 24448
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 2 phases. BBOX = 24118
+Random placement with 3 phases. BBOX = 34095
+Simulated annealing with 3 phases. BBOX = 34277
+Quadratic placement + adaptive partitioning with 3 phases. BBOX = 42373
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 3 phases. BBOX = 27686
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 3 phases. BBOX = 28460
+Quadratic placement + bisection partitioning with 3 phases. BBOX = 45473
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 3 phases. BBOX = 30701
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 3 phases. BBOX = 30669
+Random placement with 4 phases. BBOX = 36118
+Simulated annealing with 4 phases. BBOX = 35557
+Quadratic placement + adaptive partitioning with 4 phases. BBOX = 51402
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 4 phases. BBOX = 34111
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 4 phases. BBOX = 34066
+Quadratic placement + bisection partitioning with 4 phases. BBOX = 49821
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 4 phases. BBOX = 34576
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 4 phases. BBOX = 34607
+Random placement with 5 phases. BBOX = 36825
+Simulated annealing with 5 phases. BBOX = 37333
+Quadratic placement + adaptive partitioning with 5 phases. BBOX = 49488
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 5 phases. BBOX = 33947
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 5 phases. BBOX = 33832
+Quadratic placement + bisection partitioning with 5 phases. BBOX = 50253
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 5 phases. BBOX = 34884
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 5 phases. BBOX = 34589
+Random placement with 6 phases. BBOX = 35333
+Simulated annealing with 6 phases. BBOX = 35066
+Quadratic placement + adaptive partitioning with 6 phases. BBOX = 53390
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 6 phases. BBOX = 34976
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 6 phases. BBOX = 35805
+Quadratic placement + bisection partitioning with 6 phases. BBOX = 52524
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 6 phases. BBOX = 36267
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 6 phases. BBOX = 36585
+Random placement with 7 phases. BBOX = 38671
+Simulated annealing with 7 phases. BBOX = 39112
+Quadratic placement + adaptive partitioning with 7 phases. BBOX = 55565
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 7 phases. BBOX = 38054
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 7 phases. BBOX = 38857
+Quadratic placement + bisection partitioning with 7 phases. BBOX = 54567
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 7 phases. BBOX = 37062
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 7 phases. BBOX = 38496
+Random placement with 8 phases. BBOX = 36629
+Simulated annealing with 8 phases. BBOX = 36959
+Quadratic placement + adaptive partitioning with 8 phases. BBOX = 55533
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 8 phases. BBOX = 37706
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 8 phases. BBOX = 37882
+Quadratic placement + bisection partitioning with 8 phases. BBOX = 53669
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 8 phases. BBOX = 36854
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 8 phases. BBOX = 37510
+Random placement with 9 phases. BBOX = 39544
+Simulated annealing with 9 phases. BBOX = 40710
+Quadratic placement + adaptive partitioning with 9 phases. BBOX = 57572
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 9 phases. BBOX = 39509
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 9 phases. BBOX = 40000
+Quadratic placement + bisection partitioning with 9 phases. BBOX = 56755
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 9 phases. BBOX = 40235
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 9 phases. BBOX = 40259
+Random placement with 10 phases. BBOX = 44157
+Simulated annealing with 10 phases. BBOX = 44885
+Quadratic placement + adaptive partitioning with 10 phases. BBOX = 62878
+Quadratic placement + adaptive partitioning + 10000 iterations random placement with 10 phases. BBOX = 43829
+Quadratic placement + adaptive partitioning + 10000 iterations simulated annealing with 10 phases. BBOX = 44798
+Quadratic placement + bisection partitioning with 10 phases. BBOX = 61332
+Quadratic placement + bisection partitioning + 10000 iterations random placement with 10 phases. BBOX = 43322
+Quadratic placement + bisection partitioning + 10000 iterations simulated annealing with 10 phases. BBOX = 43530
+
